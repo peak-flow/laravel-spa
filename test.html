@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Add this in your <head> or anywhere before your code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <!-- Add this at the very bottom, just before </body> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        pre {
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+
+    </style>
+</head>
+<body>
+<pre><code class="language-php">&lt;?php
+namespace App\Http\Controllers;
+
+class OrderController extends Controller
+{
+    public function index()
+    {
+        return view('orders.index');
+    }
+}</code></pre>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+</body>
+</html>
