@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reusable Components Tutorial - React, Vue.js, Alpine.js, HTMX, Livewire</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <style>
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+        
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Monaco', 'Menlo', monospace;
+        }
+        
+        .demo-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .feature-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .component-demo {
+            border: 2px dashed #e5e7eb;
+            background: #f9fafb;
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div x-data="componentTutorial()" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Reusable Components Tutorial</h1>
+                        <p class="text-gray-600 mt-1">Learn how to create components in React, Vue.js, Alpine.js, HTMX, and Livewire</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button @click="showDemo = !showDemo"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <span x-text="showDemo ? 'Hide Demo' : 'Show Demo'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8 overflow-x-auto py-4">
+                    <template x-for="framework in frameworks" :key="framework.id">
+                        <button @click="activeFramework = framework.id"
+                                :class="activeFramework === framework.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors"
+                                x-text="framework.name">
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Demo Area -->
+        <div x-show="showDemo" x-transition class="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h3 class="text-lg font-semibold text-blue-800 mb-4">Live Component Demo</h3>
+                <div class="component-demo p-6 rounded-lg">
+                    <div id="demo-content" class="flex items-center justify-center text-gray-500">
+                        Select a framework above to see component examples and demos
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- React Components -->
+            <div x-show="activeFramework === 'react'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-white font-bold text-xl">R</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">React Components</h2>
+                            <p class="text-gray-600">Component-based UI library with JSX and hooks</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">✅ Strengths</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Excellent component ecosystem</li>
+                                <li>• Strong TypeScript support</li>
+                                <li>• Virtual DOM for performance</li>
+                                <li>• Hooks for state management</li>
+                                <li>• Large community</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">⚠️ Considerations</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Requires build process</li>
+                                <li>• JSX learning curve</li>
+                                <li>• Additional complexity</li>
+                                <li>• Bundle size overhead</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button @click="loadReactDemo()" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mb-6">
+                        Load React Demo
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Function Component Example</h3>
+                    <pre><code class="language-jsx">// UserCard.jsx
+import React, { useState } from 'react';
+
+function UserCard({ user, onEdit, className = '' }) {
+    const [showDetails, setShowDetails] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const handleEdit = () => {
+        setIsEditing(true);
+        onEdit?.(user);
+    };
+
+    return (
+        &lt;div className={`bg-white rounded-lg shadow-md p-6 ${className}`}&gt;
+            &lt;div className="flex items-center justify-between mb-4"&gt;
+                &lt;h3 className="text-xl font-semibold text-gray-900"&gt;
+                    {user.name}
+                &lt;/h3&gt;
+                &lt;button
+                    onClick={handleEdit}
+                    className="text-blue-600 hover:text-blue-800"
+                &gt;
+                    Edit
+                &lt;/button&gt;
+            &lt;/div&gt;
+            
+            &lt;p className="text-gray-600 mb-4"&gt;{user.email}&lt;/p&gt;
+            
+            &lt;button
+                onClick={() =&gt; setShowDetails(!showDetails)}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            &gt;
+                {showDetails ? 'Hide' : 'Show'} Details
+            &lt;/button&gt;
+            
+            {showDetails && (
+                &lt;div className="mt-4 p-4 bg-gray-50 rounded"&gt;
+                    &lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; {user.role}&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;Joined:&lt;/strong&gt; {user.joinedDate}&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;Status:&lt;/strong&gt; 
+                        &lt;span className={`px-2 py-1 rounded text-sm ${
+                            user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}&gt;
+                            {user.isActive ? 'Active' : 'Inactive'}
+                        &lt;/span&gt;
+                    &lt;/p&gt;
+                &lt;/div&gt;
+            )}
+        &lt;/div&gt;
+    );
+}
+
+export default UserCard;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage Example</h3>
+                    <pre><code class="language-jsx">// App.jsx
+import React, { useState } from 'react';
+import UserCard from './components/UserCard';
+
+function App() {
+    const [users] = useState([
+        {
+            id: 1,
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'Developer',
+            joinedDate: '2023-01-15',
+            isActive: true
+        },
+        {
+            id: 2,
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            role: 'Designer',
+            joinedDate: '2023-02-20',
+            isActive: false
+        }
+    ]);
+
+    const handleUserEdit = (user) => {
+        console.log('Editing user:', user);
+        // Handle edit logic
+    };
+
+    return (
+        &lt;div className="min-h-screen bg-gray-100 p-8"&gt;
+            &lt;h1 className="text-3xl font-bold text-gray-900 mb-8"&gt;
+                User Directory
+            &lt;/h1&gt;
+            
+            &lt;div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+                {users.map(user =&gt; (
+                    &lt;UserCard
+                        key={user.id}
+                        user={user}
+                        onEdit={handleUserEdit}
+                        className="hover:shadow-lg transition-shadow"
+                    /&gt;
+                ))}
+            &lt;/div&gt;
+        &lt;/div&gt;
+    );
+}
+
+export default App;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Custom Hooks for Reusability</h3>
+                    <pre><code class="language-jsx">// hooks/useUserCard.js
+import { useState, useCallback } from 'react';
+
+export function useUserCard(initialUser) {
+    const [user, setUser] = useState(initialUser);
+    const [showDetails, setShowDetails] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const toggleDetails = useCallback(() => {
+        setShowDetails(prev => !prev);
+    }, []);
+
+    const updateUser = useCallback(async (updates) => {
+        setIsLoading(true);
+        try {
+            // API call simulation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setUser(prev => ({ ...prev, ...updates }));
+        } catch (error) {
+            console.error('Failed to update user:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    return {
+        user,
+        showDetails,
+        isLoading,
+        toggleDetails,
+        updateUser
+    };
+}
+
+// Usage in component
+function UserCard({ initialUser }) {
+    const { user, showDetails, isLoading, toggleDetails, updateUser } = useUserCard(initialUser);
+    
+    // Component JSX...
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Vue.js Components -->
+            <div x-show="activeFramework === 'vue'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-white font-bold text-xl">V</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Vue.js Components</h2>
+                            <p class="text-gray-600">Progressive framework with single-file components</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">✅ Strengths</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Easy learning curve</li>
+                                <li>• Single-file components</li>
+                                <li>• Excellent tooling (Vue CLI, Vite)</li>
+                                <li>• Built-in state management</li>
+                                <li>• Great documentation</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">⚠️ Considerations</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Smaller ecosystem than React</li>
+                                <li>• Requires build process</li>
+                                <li>• Options API vs Composition API</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button @click="loadVueDemo()" 
+                            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors mb-6">
+                        Load Vue Demo
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Single File Component (Composition API)</h3>
+                    <pre><code class="language-vue">&lt;!-- UserCard.vue --&gt;
+&lt;template&gt;
+  &lt;div :class="['bg-white rounded-lg shadow-md p-6', className]"&gt;
+    &lt;div class="flex items-center justify-between mb-4"&gt;
+      &lt;h3 class="text-xl font-semibold text-gray-900"&gt;
+        {{ user.name }}
+      &lt;/h3&gt;
+      &lt;button
+        @click="handleEdit"
+        class="text-blue-600 hover:text-blue-800"
+      &gt;
+        Edit
+      &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;p class="text-gray-600 mb-4"&gt;{{ user.email }}&lt;/p&gt;
+    
+    &lt;button
+      @click="toggleDetails"
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      :disabled="isLoading"
+    &gt;
+      {{ showDetails ? 'Hide' : 'Show' }} Details
+    &lt;/button&gt;
+    
+    &lt;div v-if="showDetails" class="mt-4 p-4 bg-gray-50 rounded"&gt;
+      &lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; {{ user.role }}&lt;/p&gt;
+      &lt;p&gt;&lt;strong&gt;Joined:&lt;/strong&gt; {{ formatDate(user.joinedDate) }}&lt;/p&gt;
+      &lt;p&gt;&lt;strong&gt;Status:&lt;/strong&gt; 
+        &lt;span 
+          :class="[
+            'px-2 py-1 rounded text-sm',
+            user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          ]"
+        &gt;
+          {{ user.isActive ? 'Active' : 'Inactive' }}
+        &lt;/span&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref, computed } from 'vue'
+
+// Props
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true
+  },
+  className: {
+    type: String,
+    default: ''
+  }
+})
+
+// Emits
+const emit = defineEmits(['edit', 'update'])
+
+// Reactive state
+const showDetails = ref(false)
+const isLoading = ref(false)
+
+// Methods
+const toggleDetails = () => {
+  showDetails.value = !showDetails.value
+}
+
+const handleEdit = () => {
+  emit('edit', props.user)
+}
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString()
+}
+
+// Computed properties
+const userStatus = computed(() => {
+  return props.user.isActive ? 'Active' : 'Inactive'
+})
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.user-card-enter-active,
+.user-card-leave-active {
+  transition: all 0.3s ease;
+}
+
+.user-card-enter-from,
+.user-card-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+&lt;/style&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Options API Version</h3>
+                    <pre><code class="language-vue">&lt;!-- UserCard.vue (Options API) --&gt;
+&lt;template&gt;
+  &lt;div :class="['user-card', className]"&gt;
+    &lt;h3&gt;{{ user.name }}&lt;/h3&gt;
+    &lt;p&gt;{{ user.email }}&lt;/p&gt;
+    
+    &lt;button @click="toggleDetails"&gt;
+      {{ showDetails ? 'Hide' : 'Show' }} Details
+    &lt;/button&gt;
+    
+    &lt;div v-show="showDetails" class="details"&gt;
+      &lt;p&gt;Role: {{ user.role }}&lt;/p&gt;
+      &lt;p&gt;Status: {{ userStatus }}&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'UserCard',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+      validator(value) {
+        return value && value.name && value.email
+      }
+    },
+    className: {
+      type: String,
+      default: ''
+    }
+  },
+  emits: ['edit', 'delete'],
+  data() {
+    return {
+      showDetails: false,
+      isLoading: false
+    }
+  },
+  computed: {
+    userStatus() {
+      return this.user.isActive ? 'Active' : 'Inactive'
+    },
+    cardClasses() {
+      return [
+        'bg-white rounded-lg shadow-md p-6',
+        this.className,
+        { 'opacity-50': this.isLoading }
+      ]
+    }
+  },
+  methods: {
+    toggleDetails() {
+      this.showDetails = !this.showDetails
+    },
+    handleEdit() {
+      this.$emit('edit', this.user)
+    },
+    async updateStatus() {
+      this.isLoading = true
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.user.isActive = !this.user.isActive
+      } finally {
+        this.isLoading = false
+      }
+    }
+  },
+  watch: {
+    'user.name': {
+      handler(newName) {
+        console.log(`User name changed to: ${newName}`)
+      },
+      immediate: true
+    }
+  }
+}
+&lt;/script&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage in Parent Component</h3>
+                    <pre><code class="language-vue">&lt;!-- App.vue --&gt;
+&lt;template&gt;
+  &lt;div class="min-h-screen bg-gray-100 p-8"&gt;
+    &lt;h1 class="text-3xl font-bold text-gray-900 mb-8"&gt;
+      User Directory
+    &lt;/h1&gt;
+    
+    &lt;div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+      &lt;UserCard
+        v-for="user in users"
+        :key="user.id"
+        :user="user"
+        class-name="hover:shadow-lg transition-shadow"
+        @edit="handleUserEdit"
+      /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue'
+import UserCard from './components/UserCard.vue'
+
+const users = ref([
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'Developer',
+    joinedDate: '2023-01-15',
+    isActive: true
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    role: 'Designer',
+    joinedDate: '2023-02-20',
+    isActive: false
+  }
+])
+
+const handleUserEdit = (user) => {
+  console.log('Editing user:', user)
+  // Handle edit logic
+}
+&lt;/script&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Alpine.js Components -->
+            <div x-show="activeFramework === 'alpine'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-white font-bold text-xl">A</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Alpine.js Components</h2>
+                            <p class="text-gray-600">Lightweight reactive framework for HTML</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">✅ Strengths</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• No build process required</li>
+                                <li>• Minimal learning curve</li>
+                                <li>• Works with existing HTML</li>
+                                <li>• Very lightweight (~10kb)</li>
+                                <li>• Great for progressive enhancement</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">⚠️ Considerations</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Limited component abstraction</li>
+                                <li>• No built-in router</li>
+                                <li>• Template reuse can be verbose</li>
+                                <li>• Less suitable for complex SPAs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button @click="loadAlpineDemo()" 
+                            class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors mb-6">
+                        Load Alpine Demo
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Alpine.data() Components</h3>
+                    <pre><code class="language-javascript">// Define reusable component logic
+Alpine.data('userCard', (user) => ({
+    user: user,
+    showDetails: false,
+    isLoading: false,
+    
+    init() {
+        console.log('User card initialized for:', this.user.name);
+    },
+    
+    toggleDetails() {
+        this.showDetails = !this.showDetails;
+    },
+    
+    async updateStatus() {
+        this.isLoading = true;
+        
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            this.user.isActive = !this.user.isActive;
+        } catch (error) {
+            console.error('Failed to update status:', error);
+        } finally {
+            this.isLoading = false;
+        }
+    },
+    
+    handleEdit() {
+        this.$dispatch('user-edit', { user: this.user });
+    },
+    
+    get userStatusClass() {
+        return this.user.isActive 
+            ? 'bg-green-100 text-green-800' 
+            : 'bg-red-100 text-red-800';
+    },
+    
+    get formattedJoinDate() {
+        return new Date(this.user.joinedDate).toLocaleDateString();
+    }
+}));</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">HTML Template</h3>
+                    <pre><code class="language-html">&lt;!-- Reusable User Card Template --&gt;
+&lt;template id="user-card-template"&gt;
+  &lt;div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+       :class="{ 'opacity-50': isLoading }"&gt;
+    
+    &lt;div class="flex items-center justify-between mb-4"&gt;
+      &lt;h3 class="text-xl font-semibold text-gray-900" x-text="user.name"&gt;&lt;/h3&gt;
+      &lt;button
+        @click="handleEdit"
+        class="text-blue-600 hover:text-blue-800 transition-colors"
+        :disabled="isLoading"
+      &gt;
+        Edit
+      &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;p class="text-gray-600 mb-4" x-text="user.email"&gt;&lt;/p&gt;
+    
+    &lt;div class="flex space-x-2 mb-4"&gt;
+      &lt;button
+        @click="toggleDetails"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        x-text="showDetails ? 'Hide Details' : 'Show Details'"
+      &gt;&lt;/button&gt;
+      
+      &lt;button
+        @click="updateStatus"
+        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+        :disabled="isLoading"
+      &gt;
+        &lt;span x-show="!isLoading"&gt;Toggle Status&lt;/span&gt;
+        &lt;span x-show="isLoading"&gt;Loading...&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;div x-show="showDetails" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         class="p-4 bg-gray-50 rounded"&gt;
+      
+      &lt;p class="mb-2"&gt;
+        &lt;strong&gt;Role:&lt;/strong&gt; 
+        &lt;span x-text="user.role"&gt;&lt;/span&gt;
+      &lt;/p&gt;
+      
+      &lt;p class="mb-2"&gt;
+        &lt;strong&gt;Joined:&lt;/strong&gt; 
+        &lt;span x-text="formattedJoinDate"&gt;&lt;/span&gt;
+      &lt;/p&gt;
+      
+      &lt;p&gt;
+        &lt;strong&gt;Status:&lt;/strong&gt; 
+        &lt;span 
+          class="px-2 py-1 rounded text-sm"
+          :class="userStatusClass"
+          x-text="user.isActive ? 'Active' : 'Inactive'"
+        &gt;&lt;/span&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage Example</h3>
+                    <pre><code class="language-html">&lt;!-- Main Application --&gt;
+&lt;div x-data="userDirectory()" class="min-h-screen bg-gray-100 p-8"&gt;
+  &lt;h1 class="text-3xl font-bold text-gray-900 mb-8"&gt;User Directory&lt;/h1&gt;
+  
+  &lt;div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+    &lt;template x-for="user in users" :key="user.id"&gt;
+      &lt;div x-data="userCard(user)" @user-edit="handleUserEdit($event.detail)"&gt;
+        &lt;!-- Include the template content here or use x-html --&gt;
+        &lt;div class="bg-white rounded-lg shadow-md p-6"&gt;
+          &lt;h3 x-text="user.name"&gt;&lt;/h3&gt;
+          &lt;p x-text="user.email"&gt;&lt;/p&gt;
+          &lt;button @click="toggleDetails" x-text="showDetails ? 'Hide' : 'Show'"&gt;&lt;/button&gt;
+          &lt;div x-show="showDetails"&gt;
+            &lt;p&gt;Role: &lt;span x-text="user.role"&gt;&lt;/span&gt;&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+// Main app data
+Alpine.data('userDirectory', () => ({
+  users: [
+    {
+      id: 1,
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'Developer',
+      joinedDate: '2023-01-15',
+      isActive: true
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'Designer',
+      joinedDate: '2023-02-20',
+      isActive: false
+    }
+  ],
+  
+  handleUserEdit(event) {
+    console.log('Editing user:', event.user);
+    // Handle edit logic
+  }
+}));
+&lt;/script&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Advanced: Custom Alpine Directive</h3>
+                    <pre><code class="language-javascript">// Create a custom directive for user cards
+Alpine.directive('user-card', (el, { expression }, { evaluate, effect }) => {
+    const user = evaluate(expression);
+    
+    el.innerHTML = `
+        &lt;div class="bg-white rounded-lg shadow-md p-6"&gt;
+            &lt;h3 class="text-xl font-semibold"&gt;${user.name}&lt;/h3&gt;
+            &lt;p class="text-gray-600"&gt;${user.email}&lt;/p&gt;
+            &lt;button class="bg-blue-500 text-white px-4 py-2 rounded"&gt;
+                View Details
+            &lt;/button&gt;
+        &lt;/div&gt;
+    `;
+    
+    // Initialize Alpine functionality
+    Alpine.initTree(el);
+});
+
+// Usage:
+// &lt;div x-user-card="user"&gt;&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- HTMX Components -->
+            <div x-show="activeFramework === 'htmx'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-white font-bold text-xl">H</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">HTMX Components</h2>
+                            <p class="text-gray-600">Server-side rendered components with AJAX interactions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">✅ Strengths</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Server-side rendering (SEO friendly)</li>
+                                <li>• No build process</li>
+                                <li>• Progressive enhancement</li>
+                                <li>• Works with any backend</li>
+                                <li>• Minimal JavaScript</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">⚠️ Considerations</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Requires server-side logic</li>
+                                <li>• Network requests for interactions</li>
+                                <li>• Limited client-side state</li>
+                                <li>• Learning curve for attributes</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button @click="loadHTMXDemo()" 
+                            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors mb-6">
+                        Load HTMX Demo
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Laravel Backend Component</h3>
+                    <pre><code class="language-php">&lt;?php
+// app/Http/Controllers/UserCardController.php
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class UserCardController extends Controller
+{
+    public function show(User $user)
+    {
+        return view('components.user-card', compact('user'));
+    }
+    
+    public function details(User $user)
+    {
+        return view('components.user-card-details', compact('user'));
+    }
+    
+    public function toggleStatus(User $user)
+    {
+        $user->update(['is_active' => !$user->is_active]);
+        
+        return view('components.user-status', compact('user'));
+    }
+    
+    public function edit(User $user)
+    {
+        return view('components.user-edit-form', compact('user'));
+    }
+    
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|string'
+        ]);
+        
+        $user->update($validated);
+        
+        return view('components.user-card', compact('user'));
+    }
+}</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Blade Component Template</h3>
+                    <pre><code class="language-html">&lt;!-- resources/views/components/user-card.blade.php --&gt;
+&lt;div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+     id="user-card-{{ $user->id }}"&gt;
+    
+    &lt;div class="flex items-center justify-between mb-4"&gt;
+        &lt;h3 class="text-xl font-semibold text-gray-900"&gt;
+            {{ $user->name }}
+        &lt;/h3&gt;
+        
+        &lt;button
+            hx-get="/users/{{ $user->id }}/edit"
+            hx-target="#user-card-{{ $user->id }}"
+            hx-swap="outerHTML"
+            class="text-blue-600 hover:text-blue-800 transition-colors"
+        &gt;
+            Edit
+        &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;p class="text-gray-600 mb-4"&gt;{{ $user->email }}&lt;/p&gt;
+    
+    &lt;div class="flex space-x-2 mb-4"&gt;
+        &lt;button
+            hx-get="/users/{{ $user->id }}/details"
+            hx-target="#details-{{ $user->id }}"
+            hx-swap="innerHTML"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        &gt;
+            Show Details
+        &lt;/button&gt;
+        
+        &lt;button
+            hx-post="/users/{{ $user->id }}/toggle-status"
+            hx-target="#status-{{ $user->id }}"
+            hx-swap="outerHTML"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+        &gt;
+            Toggle Status
+        &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;div id="status-{{ $user->id }}"&gt;
+        @include('components.user-status', ['user' => $user])
+    &lt;/div&gt;
+    
+    &lt;div id="details-{{ $user->id }}"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Partial Templates</h3>
+                    <pre><code class="language-html">&lt;!-- resources/views/components/user-card-details.blade.php --&gt;
+&lt;div class="mt-4 p-4 bg-gray-50 rounded"
+     hx-get="/users/{{ $user->id }}/details"
+     hx-trigger="load delay:2s"
+     hx-swap="outerHTML"&gt;
+    
+    &lt;p class="mb-2"&gt;
+        &lt;strong&gt;Role:&lt;/strong&gt; {{ $user->role }}
+    &lt;/p&gt;
+    
+    &lt;p class="mb-2"&gt;
+        &lt;strong&gt;Joined:&lt;/strong&gt; {{ $user->created_at->format('M d, Y') }}
+    &lt;/p&gt;
+    
+    &lt;p class="mb-2"&gt;
+        &lt;strong&gt;Last Login:&lt;/strong&gt; 
+        {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Never' }}
+    &lt;/p&gt;
+    
+    &lt;button
+        hx-delete="/users/{{ $user->id }}/details"
+        hx-target="closest div"
+        hx-swap="outerHTML"
+        class="text-red-600 hover:text-red-800 text-sm"
+    &gt;
+        Hide Details
+    &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- resources/views/components/user-status.blade.php --&gt;
+&lt;span 
+    id="status-{{ $user->id }}"
+    class="px-2 py-1 rounded text-sm {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}"
+&gt;
+    {{ $user->is_active ? 'Active' : 'Inactive' }}
+&lt;/span&gt;
+
+&lt;!-- resources/views/components/user-edit-form.blade.php --&gt;
+&lt;form 
+    hx-put="/users/{{ $user->id }}"
+    hx-target="#user-card-{{ $user->id }}"
+    hx-swap="outerHTML"
+    class="bg-white rounded-lg shadow-md p-6"
+&gt;
+    @csrf
+    
+    &lt;div class="mb-4"&gt;
+        &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Name&lt;/label&gt;
+        &lt;input 
+            type="text" 
+            name="name" 
+            value="{{ $user->name }}"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+        &gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-4"&gt;
+        &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Email&lt;/label&gt;
+        &lt;input 
+            type="email" 
+            name="email" 
+            value="{{ $user->email }}"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+        &gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-4"&gt;
+        &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Role&lt;/label&gt;
+        &lt;select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-md"&gt;
+            &lt;option value="Developer" {{ $user->role === 'Developer' ? 'selected' : '' }}&gt;Developer&lt;/option&gt;
+            &lt;option value="Designer" {{ $user->role === 'Designer' ? 'selected' : '' }}&gt;Designer&lt;/option&gt;
+            &lt;option value="Manager" {{ $user->role === 'Manager' ? 'selected' : '' }}&gt;Manager&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="flex space-x-2"&gt;
+        &lt;button 
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        &gt;
+            Save Changes
+        &lt;/button&gt;
+        
+        &lt;button 
+            type="button"
+            hx-get="/users/{{ $user->id }}"
+            hx-target="#user-card-{{ $user->id }}"
+            hx-swap="outerHTML"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        &gt;
+            Cancel
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Routes Configuration</h3>
+                    <pre><code class="language-php">&lt;?php
+// routes/web.php
+use App\Http\Controllers\UserCardController;
+
+Route::prefix('users')->group(function () {
+    Route::get('{user}', [UserCardController::class, 'show']);
+    Route::get('{user}/details', [UserCardController::class, 'details']);
+    Route::get('{user}/edit', [UserCardController::class, 'edit']);
+    Route::put('{user}', [UserCardController::class, 'update']);
+    Route::post('{user}/toggle-status', [UserCardController::class, 'toggleStatus']);
+    Route::delete('{user}/details', function() {
+        return response('', 200); // Return empty response to hide details
+    });
+});</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage in Main Template</h3>
+                    <pre><code class="language-html">&lt;!-- resources/views/users/index.blade.php --&gt;
+@extends('layouts.app')
+
+@section('content')
+&lt;div class="min-h-screen bg-gray-100 p-8"&gt;
+    &lt;h1 class="text-3xl font-bold text-gray-900 mb-8"&gt;User Directory&lt;/h1&gt;
+    
+    &lt;div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+        @foreach($users as $user)
+            @include('components.user-card', ['user' => $user])
+        @endforeach
+    &lt;/div&gt;
+    
+    &lt;!-- Or load via HTMX --&gt;
+    &lt;div 
+        hx-get="/users-grid"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+        class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+    &gt;
+        Loading users...
+    &lt;/div&gt;
+&lt;/div&gt;
+@endsection</code></pre>
+                </div>
+            </div>
+
+            <!-- Livewire Components -->
+            <div x-show="activeFramework === 'livewire'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-white font-bold text-xl">L</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Livewire Components</h2>
+                            <p class="text-gray-600">Full-stack reactive components for Laravel</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">✅ Strengths</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Full-stack reactive components</li>
+                                <li>• No API layer needed</li>
+                                <li>• Laravel integration</li>
+                                <li>• Real-time updates</li>
+                                <li>• PHP-only development</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">⚠️ Considerations</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Laravel dependency</li>
+                                <li>• Network requests for interactions</li>
+                                <li>• Learning curve for wire: syntax</li>
+                                <li>• Performance considerations</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button @click="loadLivewireDemo()" 
+                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors mb-6">
+                        Load Livewire Demo
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Livewire Component Class</h3>
+                    <pre><code class="language-php">&lt;?php
+// app/Http/Livewire/UserCard.php
+namespace App\Http\Livewire;
+
+use App\Models\User;
+use Livewire\Component;
+
+class UserCard extends Component
+{
+    public User $user;
+    public bool $showDetails = false;
+    public bool $isEditing = false;
+    public bool $isLoading = false;
+    
+    // Component properties
+    public string $name;
+    public string $email;
+    public string $role;
+    
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'role' => 'required|string'
+    ];
+    
+    public function mount(User $user)
+    {
+        $this->user = $user;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->role = $user->role;
+    }
+    
+    public function toggleDetails()
+    {
+        $this->showDetails = !$this->showDetails;
+        
+        // Emit event for analytics or other components
+        $this->emit('userDetailsToggled', $this->user->id, $this->showDetails);
+    }
+    
+    public function startEdit()
+    {
+        $this->isEditing = true;
+        $this->resetErrorBag();
+    }
+    
+    public function cancelEdit()
+    {
+        $this->isEditing = false;
+        
+        // Reset to original values
+        $this->name = $this->user->name;
+        $this->email = $this->user->email;
+        $this->role = $this->user->role;
+        
+        $this->resetErrorBag();
+    }
+    
+    public function saveUser()
+    {
+        $this->validate();
+        
+        $this->isLoading = true;
+        
+        try {
+            $this->user->update([
+                'name' => $this->name,
+                'email' => $this->email,
+                'role' => $this->role
+            ]);
+            
+            $this->isEditing = false;
+            
+            // Show success message
+            session()->flash('message', 'User updated successfully!');
+            
+            // Emit event to parent component or other listeners
+            $this->emit('userUpdated', $this->user->id);
+            
+        } catch (\Exception $e) {
+            $this->addError('general', 'Failed to update user: ' . $e->getMessage());
+        } finally {
+            $this->isLoading = false;
+        }
+    }
+    
+    public function toggleStatus()
+    {
+        $this->isLoading = true;
+        
+        try {
+            $this->user->update([
+                'is_active' => !$this->user->is_active
+            ]);
+            
+            // Refresh the user model
+            $this->user->refresh();
+            
+        } catch (\Exception $e) {
+            $this->addError('status', 'Failed to update status');
+        } finally {
+            $this->isLoading = false;
+        }
+    }
+    
+    public function deleteUser()
+    {
+        // Emit event to parent for confirmation
+        $this->emit('confirmUserDeletion', $this->user->id);
+    }
+    
+    // Computed property
+    public function getUserStatusClassProperty()
+    {
+        return $this->user->is_active 
+            ? 'bg-green-100 text-green-800' 
+            : 'bg-red-100 text-red-800';
+    }
+    
+    // Lifecycle hooks
+    public function updatedName($value)
+    {
+        $this->name = ucwords($value);
+    }
+    
+    public function updatedEmail($value)
+    {
+        $this->email = strtolower($value);
+    }
+    
+    public function render()
+    {
+        return view('livewire.user-card');
+    }
+}</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Livewire Blade Template</h3>
+                    <pre><code class="language-html">&lt;!-- resources/views/livewire/user-card.blade.php --&gt;
+&lt;div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+     wire:loading.class="opacity-50"&gt;
+    
+    @if (session()->has('message'))
+        &lt;div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"&gt;
+            {{ session('message') }}
+        &lt;/div&gt;
+    @endif
+    
+    @if ($errors->has('general'))
+        &lt;div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"&gt;
+            {{ $errors->first('general') }}
+        &lt;/div&gt;
+    @endif
+    
+    @if ($isEditing)
+        {{-- Edit Mode --}}
+        &lt;form wire:submit.prevent="saveUser"&gt;
+            &lt;div class="mb-4"&gt;
+                &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Name&lt;/label&gt;
+                &lt;input 
+                    type="text" 
+                    wire:model.defer="name"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 @enderror"
+                    wire:loading.attr="disabled"
+                &gt;
+                @error('name') 
+                    &lt;p class="mt-1 text-sm text-red-600"&gt;{{ $message }}&lt;/p&gt; 
+                @enderror
+            &lt;/div&gt;
+            
+            &lt;div class="mb-4"&gt;
+                &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Email&lt;/label&gt;
+                &lt;input 
+                    type="email" 
+                    wire:model.defer="email"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror"
+                    wire:loading.attr="disabled"
+                &gt;
+                @error('email') 
+                    &lt;p class="mt-1 text-sm text-red-600"&gt;{{ $message }}&lt;/p&gt; 
+                @enderror
+            &lt;/div&gt;
+            
+            &lt;div class="mb-4"&gt;
+                &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;Role&lt;/label&gt;
+                &lt;select 
+                    wire:model.defer="role"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    wire:loading.attr="disabled"
+                &gt;
+                    &lt;option value="Developer"&gt;Developer&lt;/option&gt;
+                    &lt;option value="Designer"&gt;Designer&lt;/option&gt;
+                    &lt;option value="Manager"&gt;Manager&lt;/option&gt;
+                &lt;/select&gt;
+                @error('role') 
+                    &lt;p class="mt-1 text-sm text-red-600"&gt;{{ $message }}&lt;/p&gt; 
+                @enderror
+            &lt;/div&gt;
+            
+            &lt;div class="flex space-x-2"&gt;
+                &lt;button 
+                    type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                    wire:loading.attr="disabled"
+                &gt;
+                    &lt;span wire:loading.remove wire:target="saveUser"&gt;Save Changes&lt;/span&gt;
+                    &lt;span wire:loading wire:target="saveUser"&gt;Saving...&lt;/span&gt;
+                &lt;/button&gt;
+                
+                &lt;button 
+                    type="button"
+                    wire:click="cancelEdit"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    wire:loading.attr="disabled"
+                &gt;
+                    Cancel
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+    @else
+        {{-- Display Mode --}}
+        &lt;div class="flex items-center justify-between mb-4"&gt;
+            &lt;h3 class="text-xl font-semibold text-gray-900"&gt;{{ $user->name }}&lt;/h3&gt;
+            
+            &lt;div class="flex space-x-2"&gt;
+                &lt;button
+                    wire:click="startEdit"
+                    class="text-blue-600 hover:text-blue-800 transition-colors"
+                    wire:loading.attr="disabled"
+                &gt;
+                    Edit
+                &lt;/button&gt;
+                
+                &lt;button
+                    wire:click="deleteUser"
+                    class="text-red-600 hover:text-red-800 transition-colors"
+                    wire:loading.attr="disabled"
+                &gt;
+                    Delete
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;p class="text-gray-600 mb-4"&gt;{{ $user->email }}&lt;/p&gt;
+        
+        &lt;div class="flex space-x-2 mb-4"&gt;
+            &lt;button
+                wire:click="toggleDetails"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+                wire:loading.attr="disabled"
+            &gt;
+                {{ $showDetails ? 'Hide Details' : 'Show Details' }}
+            &lt;/button&gt;
+            
+            &lt;button
+                wire:click="toggleStatus"
+                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors disabled:opacity-50"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-50"
+            &gt;
+                &lt;span wire:loading.remove wire:target="toggleStatus"&gt;
+                    {{ $user->is_active ? 'Deactivate' : 'Activate' }}
+                &lt;/span&gt;
+                &lt;span wire:loading wire:target="toggleStatus"&gt;
+                    Processing...
+                &lt;/span&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+        
+        &lt;div class="mb-4"&gt;
+            &lt;span class="px-2 py-1 rounded text-sm {{ $this->userStatusClass }}"&gt;
+                {{ $user->is_active ? 'Active' : 'Inactive' }}
+            &lt;/span&gt;
+            
+            @error('status')
+                &lt;p class="mt-1 text-sm text-red-600"&gt;{{ $message }}&lt;/p&gt;
+            @enderror
+        &lt;/div&gt;
+        
+        @if ($showDetails)
+            &lt;div 
+                class="p-4 bg-gray-50 rounded transition-all duration-300"
+                wire:transition
+            &gt;
+                &lt;p class="mb-2"&gt;
+                    &lt;strong&gt;Role:&lt;/strong&gt; {{ $user->role }}
+                &lt;/p&gt;
+                
+                &lt;p class="mb-2"&gt;
+                    &lt;strong&gt;Joined:&lt;/strong&gt; {{ $user->created_at->format('M d, Y') }}
+                &lt;/p&gt;
+                
+                &lt;p class="mb-2"&gt;
+                    &lt;strong&gt;Last Updated:&lt;/strong&gt; {{ $user->updated_at->diffForHumans() }}
+                &lt;/p&gt;
+                
+                &lt;p&gt;
+                    &lt;strong&gt;ID:&lt;/strong&gt; {{ $user->id }}
+                &lt;/p&gt;
+            &lt;/div&gt;
+        @endif
+    @endif
+    
+    {{-- Loading indicator --}}
+    &lt;div wire:loading wire:target="toggleStatus,saveUser" class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg"&gt;
+        &lt;div class="flex items-center space-x-2"&gt;
+            &lt;div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"&gt;&lt;/div&gt;
+            &lt;span class="text-blue-600"&gt;Processing...&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage in Parent Component</h3>
+                    <pre><code class="language-php">&lt;?php
+// app/Http/Livewire/UserDirectory.php
+namespace App\Http\Livewire;
+
+use App\Models\User;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class UserDirectory extends Component
+{
+    use WithPagination;
+    
+    public string $search = '';
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
+    
+    protected $listeners = [
+        'userUpdated' => 'handleUserUpdated',
+        'confirmUserDeletion' => 'confirmDeletion'
+    ];
+    
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    
+    public function sortBy($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+    
+    public function handleUserUpdated($userId)
+    {
+        session()->flash('message', 'User updated successfully!');
+        // Optionally refresh user data or emit other events
+    }
+    
+    public function confirmDeletion($userId)
+    {
+        // You could emit a browser event to show a confirmation modal
+        $this->emit('showDeleteConfirmation', $userId);
+    }
+    
+    public function render()
+    {
+        $users = User::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('email', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate(12);
+            
+        return view('livewire.user-directory', compact('users'));
+    }
+}</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Parent Template</h3>
+                    <pre><code class="language-html">&lt;!-- resources/views/livewire/user-directory.blade.php --&gt;
+&lt;div class="min-h-screen bg-gray-100 p-8"&gt;
+    &lt;div class="mb-8"&gt;
+        &lt;h1 class="text-3xl font-bold text-gray-900 mb-4"&gt;User Directory&lt;/h1&gt;
+        
+        &lt;div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"&gt;
+            &lt;div class="flex-1 max-w-md"&gt;
+                &lt;input 
+                    type="text" 
+                    wire:model.debounce.300ms="search"
+                    placeholder="Search users..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                &gt;
+            &lt;/div&gt;
+            
+            &lt;div class="flex space-x-2"&gt;
+                &lt;button 
+                    wire:click="sortBy('name')"
+                    class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                &gt;
+                    Name 
+                    @if($sortBy === 'name')
+                        &lt;span class="ml-1"&gt;{{ $sortDirection === 'asc' ? '↑' : '↓' }}&lt;/span&gt;
+                    @endif
+                &lt;/button&gt;
+                
+                &lt;button 
+                    wire:click="sortBy('created_at')"
+                    class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                &gt;
+                    Joined 
+                    @if($sortBy === 'created_at')
+                        &lt;span class="ml-1"&gt;{{ $sortDirection === 'asc' ? '↑' : '↓' }}&lt;/span&gt;
+                    @endif
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    @if (session()->has('message'))
+        &lt;div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"&gt;
+            {{ session('message') }}
+        &lt;/div&gt;
+    @endif
+    
+    &lt;div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+        @foreach($users as $user)
+            @livewire('user-card', ['user' => $user], key($user->id))
+        @endforeach
+    &lt;/div&gt;
+    
+    &lt;div class="mt-8"&gt;
+        {{ $users->links() }}
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Usage in Laravel Route</h3>
+                    <pre><code class="language-php">&lt;?php
+// routes/web.php
+use App\Http\Livewire\UserDirectory;
+
+Route::get('/users', UserDirectory::class)->name('users.index');
+
+// Or in a regular controller:
+Route::get('/users-page', function () {
+    return view('users.index');
+});
+
+// In the blade template:
+// &lt;livewire:user-directory /&gt;</code></pre>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Comparison Footer -->
+        <footer class="bg-white border-t mt-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Component Framework Comparison</h3>
+                
+                <div class="feature-comparison mb-8">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Learning Curve</h4>
+                        <div class="space-y-1 text-sm">
+                            <div>Alpine.js: ⭐⭐⭐⭐⭐ Easy</div>
+                            <div>Vue.js: ⭐⭐⭐⭐ Moderate</div>
+                            <div>HTMX: ⭐⭐⭐ Moderate</div>
+                            <div>Livewire: ⭐⭐⭐ Moderate</div>
+                            <div>React: ⭐⭐ Steep</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Performance</h4>
+                        <div class="space-y-1 text-sm">
+                            <div>React: ⭐⭐⭐⭐⭐ Excellent</div>
+                            <div>Vue.js: ⭐⭐⭐⭐⭐ Excellent</div>
+                            <div>Alpine.js: ⭐⭐⭐⭐ Good</div>
+                            <div>HTMX: ⭐⭐⭐ Good</div>
+                            <div>Livewire: ⭐⭐⭐ Good</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Component Reusability</h4>
+                        <div class="space-y-1 text-sm">
+                            <div>React: ⭐⭐⭐⭐⭐ Excellent</div>
+                            <div>Vue.js: ⭐⭐⭐⭐⭐ Excellent</div>
+                            <div>Livewire: ⭐⭐⭐⭐ Very Good</div>
+                            <div>Alpine.js: ⭐⭐⭐ Good</div>
+                            <div>HTMX: ⭐⭐⭐ Good</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Ecosystem</h4>
+                        <div class="space-y-1 text-sm">
+                            <div>React: ⭐⭐⭐⭐⭐ Huge</div>
+                            <div>Vue.js: ⭐⭐⭐⭐ Large</div>
+                            <div>Livewire: ⭐⭐⭐ Growing</div>
+                            <div>Alpine.js: ⭐⭐ Small</div>
+                            <div>HTMX: ⭐⭐ Small</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-center text-gray-500 text-sm">
+                    Choose the framework that best fits your team's skills and project requirements
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function componentTutorial() {
+            return {
+                activeFramework: 'react',
+                showDemo: true,
+                frameworks: [
+                    {id: 'react', name: 'React'},
+                    {id: 'vue', name: 'Vue.js'},
+                    {id: 'alpine', name: 'Alpine.js'},
+                    {id: 'htmx', name: 'HTMX'},
+                    {id: 'livewire', name: 'Livewire'}
+                ],
+                
+                // Demo functions
+                loadReactDemo() {
+                    const demoContent = `
+                        <div class="max-w-md mx-auto">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">John Doe</h3>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+                                <p class="text-gray-600 mb-4">john@example.com</p>
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    Show Details
+                                </button>
+                                <div class="mt-4 p-4 bg-gray-50 rounded">
+                                    <p><strong>Role:</strong> Developer</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">Active</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-4">React Component Demo - Interactive with state management</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadVueDemo() {
+                    const demoContent = `
+                        <div class="max-w-md mx-auto">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">Jane Smith</h3>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+                                <p class="text-gray-600 mb-4">jane@example.com</p>
+                                <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                    Show Details
+                                </button>
+                                <div class="mt-4 p-4 bg-gray-50 rounded">
+                                    <p><strong>Role:</strong> Designer</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="px-2 py-1 rounded text-sm bg-red-100 text-red-800">Inactive</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-4">Vue.js Component Demo - Single File Component with reactive data</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadAlpineDemo() {
+                    const demoContent = `
+                        <div class="max-w-md mx-auto" x-data="{ showDetails: false }">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">Bob Johnson</h3>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+                                <p class="text-gray-600 mb-4">bob@example.com</p>
+                                <button 
+                                    @click="showDetails = !showDetails"
+                                    class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+                                    x-text="showDetails ? 'Hide Details' : 'Show Details'"
+                                >
+                                </button>
+                                <div x-show="showDetails" x-transition class="mt-4 p-4 bg-gray-50 rounded">
+                                    <p><strong>Role:</strong> Manager</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">Active</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-4">Alpine.js Component Demo - No build process, works with HTML</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                    
+                    // Re-initialize Alpine for new content
+                    setTimeout(() => {
+                        if (window.Alpine) {
+                            Alpine.initTree(document.getElementById('demo-content'));
+                        }
+                    }, 100);
+                },
+                
+                loadHTMXDemo() {
+                    const demoContent = `
+                        <div class="max-w-md mx-auto">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">Alice Cooper</h3>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+                                <p class="text-gray-600 mb-4">alice@example.com</p>
+                                <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+                                    Load Details
+                                </button>
+                                <div class="mt-4 p-4 bg-gray-50 rounded">
+                                    <p><strong>Role:</strong> Developer</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">Active</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-2">Loaded from server via HTMX</p>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-4">HTMX Component Demo - Server-side rendered with AJAX interactions</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadLivewireDemo() {
+                    const demoContent = `
+                        <div class="max-w-md mx-auto">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">Sarah Wilson</h3>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+                                <p class="text-gray-600 mb-4">sarah@example.com</p>
+                                <div class="flex space-x-2 mb-4">
+                                    <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                        Toggle Details
+                                    </button>
+                                    <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                                        Toggle Status
+                                    </button>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded">
+                                    <p><strong>Role:</strong> Designer</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">Active</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-2">Real-time reactive updates</p>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-4">Livewire Component Demo - Full-stack reactive component</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

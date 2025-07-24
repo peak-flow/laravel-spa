@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Page Includes Tutorial</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <style>
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .demo-container {
+            border: 2px dashed #e5e7eb;
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div x-data="tutorialApp()" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">JavaScript Page Includes Tutorial</h1>
+                        <p class="text-gray-600 mt-1">Multiple methods for including HTML and JS content dynamically</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button @click="showDemo = !showDemo"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <span x-text="showDemo ? 'Hide Demo' : 'Show Demo'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8 overflow-x-auto py-4">
+                    <template x-for="method in methods" :key="method.id">
+                        <button @click="activeMethod = method.id"
+                                :class="activeMethod === method.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors"
+                                x-text="method.name">
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Demo Area -->
+        <div x-show="showDemo" x-transition class="bg-yellow-50 border-b border-yellow-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h3 class="text-lg font-semibold text-yellow-800 mb-4">Live Demo Area</h3>
+                <div class="demo-container p-4 rounded-lg">
+                    <div id="demo-content" class="min-h-[100px] flex items-center justify-center text-gray-500">
+                        Click "Load Demo" buttons in the methods below to see live examples
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Method 1: Fetch API -->
+            <div x-show="activeMethod === 'fetch'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Method 1: Fetch API (Modern Approach)</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">
+                            The Fetch API is the modern, promise-based approach for loading content. It works great for web servers but has limitations with local files due to CORS policies.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-semibold text-green-800 mb-2">✅ Pros</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• Modern, promise-based</li>
+                                    <li>• Great error handling</li>
+                                    <li>• Works with async/await</li>
+                                    <li>• Can handle any file type</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-semibold text-red-800 mb-2">❌ Cons</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• CORS issues with local files</li>
+                                    <li>• Requires web server for file:// protocol</li>
+                                    <li>• Not supported in older browsers</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button @click="loadFetchDemo()" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mb-4">
+                            Load Demo
+                        </button>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Basic Implementation</h3>
+                    <pre><code class="language-javascript">// Basic fetch implementation
+async function loadContent(url, targetElementId) {
+    const element = document.getElementById(targetElementId);
+    
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const content = await response.text();
+            element.innerHTML = content;
+        } else {
+            element.innerHTML = `<p class="text-red-600">Error: ${response.status}</p>`;
+        }
+    } catch (error) {
+        element.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
+    }
+}
+
+// Usage
+loadContent('sections/content.html', 'content-area');</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Advanced Implementation with Caching</h3>
+                    <pre><code class="language-javascript">class ContentLoader {
+    constructor() {
+        this.cache = new Map();
+    }
+    
+    async loadSection(sectionName, elementId) {
+        // Check cache first
+        if (this.cache.has(sectionName)) {
+            document.getElementById(elementId).innerHTML = this.cache.get(sectionName);
+            return;
+        }
+        
+        try {
+            const response = await fetch(`sections/${sectionName}.html`);
+            if (response.ok) {
+                const content = await response.text();
+                this.cache.set(sectionName, content);
+                document.getElementById(elementId).innerHTML = content;
+                
+                // Re-run any scripts or highlighting
+                this.postProcessContent(elementId);
+            }
+        } catch (error) {
+            console.error(`Failed to load ${sectionName}:`, error);
+        }
+    }
+    
+    postProcessContent(elementId) {
+        // Re-run syntax highlighting, etc.
+        const element = document.getElementById(elementId);
+        element.querySelectorAll('pre code').forEach(block => {
+            Prism.highlightElement(block);
+        });
+    }
+}
+
+// Usage
+const loader = new ContentLoader();
+loader.loadSection('overview', 'content-area');</code></pre>
+                </div>
+            </div>
+
+            <!-- Method 2: XMLHttpRequest -->
+            <div x-show="activeMethod === 'xhr'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Method 2: XMLHttpRequest (Legacy Compatible)</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">
+                            XMLHttpRequest is the older approach but has wider browser support and sometimes fewer CORS restrictions.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-semibold text-green-800 mb-2">✅ Pros</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• Wider browser support</li>
+                                    <li>• Sometimes works with local files</li>
+                                    <li>• Fine-grained control</li>
+                                    <li>• Progress tracking</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-semibold text-red-800 mb-2">❌ Cons</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• More verbose syntax</li>
+                                    <li>• Callback-based (no promises)</li>
+                                    <li>• Still has CORS issues</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button @click="loadXHRDemo()" 
+                                class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors mb-4">
+                            Load Demo
+                        </button>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Basic Implementation</h3>
+                    <pre><code class="language-javascript">function loadContentXHR(url, targetElementId) {
+    const xhr = new XMLHttpRequest();
+    const element = document.getElementById(targetElementId);
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                element.innerHTML = xhr.responseText;
+            } else {
+                element.innerHTML = `<p class="text-red-600">Error: ${xhr.status}</p>`;
+            }
+        }
+    };
+    
+    xhr.open('GET', url, true);
+    xhr.send();
+}
+
+// Usage
+loadContentXHR('sections/content.html', 'content-area');</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Promise-wrapped Version</h3>
+                    <pre><code class="language-javascript">function loadContentXHRPromise(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                }
+            }
+        };
+        
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.open('GET', url, true);
+        xhr.send();
+    });
+}
+
+// Usage with async/await
+async function loadSection() {
+    try {
+        const content = await loadContentXHRPromise('sections/overview.html');
+        document.getElementById('content-area').innerHTML = content;
+    } catch (error) {
+        console.error('Failed to load content:', error);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Method 3: Dynamic Script Loading -->
+            <div x-show="activeMethod === 'script'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Method 3: Dynamic Script Loading</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">
+                            Load JavaScript files dynamically and have them populate content. This works reliably with local files.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-semibold text-green-800 mb-2">✅ Pros</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• Works with local files</li>
+                                    <li>• No CORS issues</li>
+                                    <li>• Can execute code</li>
+                                    <li>• Dynamic module loading</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-semibold text-red-800 mb-2">❌ Cons</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• Content must be in JS format</li>
+                                    <li>• Security considerations</li>
+                                    <li>• More complex setup</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button @click="loadScriptDemo()" 
+                                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors mb-4">
+                            Load Demo
+                        </button>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Content File (content.js)</h3>
+                    <pre><code class="language-javascript">// content/overview.js
+window.contentSections = window.contentSections || {};
+
+window.contentSections.overview = `
+<div class="prose max-w-none">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Overview Section</h2>
+    <p class="text-gray-700">This content was loaded via dynamic script loading.</p>
+    <div class="bg-blue-50 p-4 rounded-lg mt-4">
+        <p class="text-blue-800">This method works great with local files!</p>
+    </div>
+</div>
+`;
+
+// Auto-populate if element exists
+if (document.getElementById('overview-content')) {
+    document.getElementById('overview-content').innerHTML = window.contentSections.overview;
+}</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 mt-6">Dynamic Loader Implementation</h3>
+                    <pre><code class="language-javascript">class ScriptContentLoader {
+    constructor() {
+        this.loadedScripts = new Set();
+        window.contentSections = window.contentSections || {};
+    }
+    
+    loadScript(src) {
+        return new Promise((resolve, reject) => {
+            if (this.loadedScripts.has(src)) {
+                resolve();
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => {
+                this.loadedScripts.add(src);
+                resolve();
+            };
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    
+    async loadSection(sectionName, elementId) {
+        try {
+            await this.loadScript(`content/${sectionName}.js`);
+            
+            if (window.contentSections[sectionName]) {
+                document.getElementById(elementId).innerHTML = window.contentSections[sectionName];
+            } else {
+                console.error(`Section ${sectionName} not found in loaded content`);
+            }
+        } catch (error) {
+            console.error(`Failed to load script for ${sectionName}:`, error);
+        }
+    }
+}
+
+// Usage
+const scriptLoader = new ScriptContentLoader();
+scriptLoader.loadSection('overview', 'content-area');</code></pre>
+                </div>
+            </div>
+
+            <!-- Method 4: Template Strings in JS -->
+            <div x-show="activeMethod === 'template'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Method 4: Template Strings in JavaScript</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">
+                            Store HTML content directly in JavaScript using template literals. Works everywhere and is completely self-contained.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-semibold text-green-800 mb-2">✅ Pros</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• Works everywhere (local files, web)</li>
+                                    <li>• No external dependencies</li>
+                                    <li>• Can include dynamic content</li>
+                                    <li>• Fast loading</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-semibold text-red-800 mb-2">❌ Cons</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• HTML is in JS files</li>
+                                    <li>• No syntax highlighting for HTML</li>
+                                    <li>• Can become unwieldy</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button @click="loadTemplateDemo()" 
+                                class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors mb-4">
+                            Load Demo
+                        </button>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Template Content Manager</h3>
+                    <pre><code class="language-javascript">class TemplateContentManager {
+    constructor() {
+        this.templates = {
+            overview: `
+                <div class="prose max-w-none">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Overview</h2>
+                    <p class="text-gray-700 mb-4">
+                        This is content loaded from a JavaScript template string.
+                    </p>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-blue-900 mb-2">Template Benefits</h3>
+                        <ul class="text-blue-800 space-y-1">
+                            <li>• No network requests needed</li>
+                            <li>• Works with file:// protocol</li>
+                            <li>• Can include JavaScript expressions</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            
+            features: `
+                <div class="prose max-w-none">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Features</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="font-semibold text-gray-900 mb-2">Dynamic Content</h3>
+                            <p class="text-gray-600">Generated at: ${new Date().toLocaleTimeString()}</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="font-semibold text-gray-900 mb-2">User Agent</h3>
+                            <p class="text-gray-600 text-sm">${navigator.userAgent.split(' ')[0]}</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+    }
+    
+    loadTemplate(templateName, elementId, data = {}) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        let template = this.templates[templateName];
+        if (!template) {
+            element.innerHTML = `<p class="text-red-600">Template "${templateName}" not found</p>`;
+            return;
+        }
+        
+        // Simple template variable replacement
+        Object.keys(data).forEach(key => {
+            template = template.replace(new RegExp(`{{${key}}}`, 'g'), data[key]);
+        });
+        
+        element.innerHTML = template;
+    }
+    
+    addTemplate(name, content) {
+        this.templates[name] = content;
+    }
+}
+
+// Usage
+const templateManager = new TemplateContentManager();
+templateManager.loadTemplate('overview', 'content-area');
+
+// With data
+templateManager.loadTemplate('features', 'content-area', {
+    userName: 'John Doe',
+    timestamp: new Date().toISOString()
+});</code></pre>
+                </div>
+            </div>
+
+            <!-- Method 5: Hybrid Approach -->
+            <div x-show="activeMethod === 'hybrid'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Method 5: Hybrid Approach (Best of Both Worlds)</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">
+                            Combine multiple methods with fallbacks. Try fetch first, fall back to other methods if needed.
+                        </p>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                            <h4 class="font-semibold text-blue-800 mb-2">💡 Smart Strategy</h4>
+                            <p class="text-blue-700 text-sm">
+                                This approach detects the environment and uses the best method available, with graceful fallbacks.
+                            </p>
+                        </div>
+                        
+                        <button @click="loadHybridDemo()" 
+                                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors mb-4">
+                            Load Demo
+                        </button>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Smart Content Loader</h3>
+                    <pre><code class="language-javascript">class SmartContentLoader {
+    constructor() {
+        this.cache = new Map();
+        this.fallbackContent = {
+            overview: `
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 class="text-yellow-800 font-semibold">Fallback Content</h3>
+                    <p class="text-yellow-700 text-sm mt-1">
+                        This content was loaded from the JavaScript fallback since 
+                        external files couldn't be loaded.
+                    </p>
+                </div>
+            `
+        };
+    }
+    
+    // Detect if we're running locally or on a server
+    isLocalFile() {
+        return window.location.protocol === 'file:';
+    }
+    
+    // Try multiple loading strategies
+    async loadContent(sectionName, elementId) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        // Show loading state
+        element.innerHTML = '<div class="animate-pulse bg-gray-200 h-20 rounded"></div>';
+        
+        try {
+            // Strategy 1: Try fetch (works on servers)
+            if (!this.isLocalFile()) {
+                const content = await this.tryFetch(sectionName);
+                if (content) {
+                    element.innerHTML = content;
+                    return;
+                }
+            }
+            
+            // Strategy 2: Try dynamic script loading
+            const scriptContent = await this.tryScriptLoading(sectionName);
+            if (scriptContent) {
+                element.innerHTML = scriptContent;
+                return;
+            }
+            
+            // Strategy 3: Use fallback content
+            if (this.fallbackContent[sectionName]) {
+                element.innerHTML = this.fallbackContent[sectionName];
+                return;
+            }
+            
+            // Strategy 4: Generate error content
+            element.innerHTML = this.generateErrorContent(sectionName);
+            
+        } catch (error) {
+            console.error(`Failed to load ${sectionName}:`, error);
+            element.innerHTML = this.generateErrorContent(sectionName, error.message);
+        }
+    }
+    
+    async tryFetch(sectionName) {
+        try {
+            const response = await fetch(`sections/${sectionName}.html`);
+            if (response.ok) {
+                return await response.text();
+            }
+        } catch (error) {
+            console.log(`Fetch failed for ${sectionName}:`, error.message);
+        }
+        return null;
+    }
+    
+    async tryScriptLoading(sectionName) {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = `content/${sectionName}.js`;
+            
+            script.onload = () => {
+                if (window.contentSections && window.contentSections[sectionName]) {
+                    resolve(window.contentSections[sectionName]);
+                } else {
+                    resolve(null);
+                }
+            };
+            
+            script.onerror = () => resolve(null);
+            
+            document.head.appendChild(script);
+            
+            // Timeout after 3 seconds
+            setTimeout(() => resolve(null), 3000);
+        });
+    }
+    
+    generateErrorContent(sectionName, errorMessage = '') {
+        return `
+            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                <h3 class="text-red-800 font-semibold">Content Unavailable</h3>
+                <p class="text-red-700 text-sm mt-1">
+                    Could not load "${sectionName}" content. ${errorMessage}
+                </p>
+                <p class="text-red-600 text-xs mt-2">
+                    Environment: ${this.isLocalFile() ? 'Local File' : 'Web Server'}
+                </p>
+            </div>
+        `;
+    }
+}
+
+// Usage
+const smartLoader = new SmartContentLoader();
+smartLoader.loadContent('overview', 'content-area');</code></pre>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function tutorialApp() {
+            return {
+                activeMethod: 'fetch',
+                showDemo: true,
+                methods: [
+                    {id: 'fetch', name: 'Fetch API'},
+                    {id: 'xhr', name: 'XMLHttpRequest'},
+                    {id: 'script', name: 'Script Loading'},
+                    {id: 'template', name: 'Template Strings'},
+                    {id: 'hybrid', name: 'Hybrid Approach'}
+                ],
+                
+                // Demo functions
+                loadFetchDemo() {
+                    const demoContent = `
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h4 class="font-semibold text-blue-800 mb-2">Fetch API Demo</h4>
+                            <p class="text-blue-700 text-sm">This content was loaded using the Fetch API method!</p>
+                            <p class="text-blue-600 text-xs mt-2">Loaded at: ${new Date().toLocaleTimeString()}</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadXHRDemo() {
+                    const demoContent = `
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <h4 class="font-semibold text-purple-800 mb-2">XMLHttpRequest Demo</h4>
+                            <p class="text-purple-700 text-sm">This content was loaded using XMLHttpRequest!</p>
+                            <p class="text-purple-600 text-xs mt-2">Browser: ${navigator.userAgent.split(' ')[0]}</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadScriptDemo() {
+                    const demoContent = `
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">Script Loading Demo</h4>
+                            <p class="text-green-700 text-sm">This content was loaded via dynamic script injection!</p>
+                            <p class="text-green-600 text-xs mt-2">Protocol: ${window.location.protocol}</p>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadTemplateDemo() {
+                    const demoContent = `
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="font-semibold text-orange-800 mb-2">Template String Demo</h4>
+                            <p class="text-orange-700 text-sm">This content was loaded from a JavaScript template string!</p>
+                            <div class="mt-2 text-orange-600 text-xs">
+                                <div>Time: ${new Date().toLocaleTimeString()}</div>
+                                <div>Random: ${Math.floor(Math.random() * 1000)}</div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                },
+                
+                loadHybridDemo() {
+                    const demoContent = `
+                        <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                            <h4 class="font-semibold text-indigo-800 mb-2">Hybrid Approach Demo</h4>
+                            <p class="text-indigo-700 text-sm">Smart loading with fallback strategies!</p>
+                            <div class="mt-2 space-y-1">
+                                <div class="text-indigo-600 text-xs">Environment: ${window.location.protocol === 'file:' ? 'Local File System' : 'Web Server'}</div>
+                                <div class="text-indigo-600 text-xs">Fallback Available: ✅</div>
+                                <div class="text-indigo-600 text-xs">Cache Enabled: ✅</div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('demo-content').innerHTML = demoContent;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
