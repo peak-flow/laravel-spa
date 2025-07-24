@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap to Tailwind CSS - A Developer's Guide</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Bootstrap CSS for comparisons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Shared Header Component -->
+    <script src="shared-header.js"></script>
+    
+    <style>
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+        
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Monaco', 'Menlo', monospace;
+        }
+        
+        .demo-container {
+            border: 2px dashed #e5e7eb;
+            background: #f9fafb;
+            min-height: 200px;
+        }
+        
+        .comparison-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-split {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .bootstrap-side {
+            border-left: 4px solid #7952b3;
+        }
+        
+        .tailwind-side {
+            border-left: 4px solid #06b6d4;
+        }
+        
+        .translator-input {
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Shared Header -->
+    <div id="shared-header"></div>
+
+    <div x-data="bootstrapToTailwind()" class="min-h-screen">
+        <!-- Page Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Bootstrap to Tailwind CSS</h1>
+                        <p class="text-gray-600 mt-1">A comprehensive guide for developers making the transition</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button @click="showComparison = !showComparison"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <span x-text="showComparison ? 'Hide Comparison' : 'Show Live Comparison'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8 overflow-x-auto py-4">
+                    <template x-for="section in sections" :key="section.id">
+                        <button @click="activeSection = section.id"
+                                :class="activeSection === section.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors"
+                                x-text="section.name">
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Live Comparison Area -->
+        <div x-show="showComparison" x-transition class="bg-gradient-to-r from-purple-50 to-cyan-50 border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Live Comparison Demo</h3>
+                <div class="comparison-split">
+                    <div class="bootstrap-side">
+                        <h4 class="font-semibold text-purple-800 mb-2">Bootstrap Version</h4>
+                        <div id="bootstrap-demo" class="demo-container p-4 rounded-lg bg-white">
+                            <!-- Bootstrap examples will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="tailwind-side">
+                        <h4 class="font-semibold text-cyan-800 mb-2">Tailwind Version</h4>
+                        <div id="tailwind-demo" class="demo-container p-4 rounded-lg bg-white">
+                            <!-- Tailwind examples will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Philosophy & Mindset -->
+            <div x-show="activeSection === 'philosophy'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Understanding the Philosophy Difference</h2>
+                    
+                    <div class="mb-8">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200 mb-6">
+                            <h3 class="text-xl font-semibold text-blue-900 mb-4">The Mental Shift</h3>
+                            <p class="text-blue-800 mb-4">
+                                The biggest challenge isn't learning new class names—it's changing how you think about styling.
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-purple-800 mb-2">🧩 Bootstrap Mindset</h4>
+                                    <p class="text-sm text-purple-700 mb-2">"I need a card component"</p>
+                                    <code class="text-xs bg-purple-100 px-2 py-1 rounded">.card .card-body .card-title</code>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-cyan-800 mb-2">⚡ Tailwind Mindset</h4>
+                                    <p class="text-sm text-cyan-700 mb-2">"I need padding, background, borders"</p>
+                                    <code class="text-xs bg-cyan-100 px-2 py-1 rounded">.p-6 .bg-white .border .rounded-lg</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button @click="loadPhilosophyDemo()" 
+                            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors mb-6">
+                        Show Philosophy Demo
+                    </button>
+
+                    <div class="comparison-split">
+                        <div class="bootstrap-side bg-purple-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-purple-900 mb-4">Bootstrap Approach</h3>
+                            <ul class="space-y-3 text-purple-800">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                                    <div>
+                                        <strong>Component-First:</strong> Think in terms of pre-built components
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                                    <div>
+                                        <strong>Semantic Classes:</strong> <code>.btn-primary</code>, <code>.card</code>, <code>.navbar</code>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                                    <div>
+                                        <strong>Override for Customization:</strong> Write custom CSS to modify components
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                                    <div>
+                                        <strong>Theming:</strong> Modify SCSS variables for global changes
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tailwind-side bg-cyan-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-cyan-900 mb-4">Tailwind Approach</h3>
+                            <ul class="space-y-3 text-cyan-800">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                                    <div>
+                                        <strong>Utility-First:</strong> Think in terms of individual properties
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                                    <div>
+                                        <strong>Descriptive Classes:</strong> <code>.bg-blue-500</code>, <code>.p-4</code>, <code>.text-lg</code>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                                    <div>
+                                        <strong>Compose for Customization:</strong> Combine utilities for any design
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                                    <div>
+                                        <strong>Configuration:</strong> Modify tailwind.config.js for custom values
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <h4 class="font-semibold text-yellow-800 mb-2">💡 The "Aha!" Moment</h4>
+                        <p class="text-yellow-700">
+                            Once you realize that Tailwind utilities are just single-purpose CSS properties with memorable names, 
+                            everything clicks. <code>.mt-4</code> is just <code>margin-top: 1rem</code>, 
+                            <code>.bg-blue-500</code> is just <code>background-color: #3b82f6</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid System Comparison -->
+            <div x-show="activeSection === 'grids'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Grid Systems: Bootstrap vs Tailwind</h2>
+                    
+                    <div class="mb-8">
+                        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6">
+                            <h3 class="text-xl font-semibold text-blue-900 mb-4">Quick Translation Guide</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-purple-800 mb-3">Bootstrap Grid</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div><code class="bg-purple-100 px-2 py-1 rounded">.container</code> → <code class="bg-cyan-100 px-2 py-1 rounded">.container mx-auto</code></div>
+                                        <div><code class="bg-purple-100 px-2 py-1 rounded">.row</code> → <code class="bg-cyan-100 px-2 py-1 rounded">.flex -mx-4</code></div>
+                                        <div><code class="bg-purple-100 px-2 py-1 rounded">.col-6</code> → <code class="bg-cyan-100 px-2 py-1 rounded">.w-1/2 px-4</code></div>
+                                        <div><code class="bg-purple-100 px-2 py-1 rounded">.col-md-4</code> → <code class="bg-cyan-100 px-2 py-1 rounded">.w-full md:w-1/3 px-4</code></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-cyan-800 mb-3">Tailwind Advantages</h4>
+                                    <ul class="space-y-2 text-sm text-cyan-700">
+                                        <li>• No need for wrapper rows</li>
+                                        <li>• CSS Grid support built-in</li>
+                                        <li>• More flexible spacing</li>
+                                        <li>• Arbitrary values: <code>w-[23%]</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button @click="loadGridDemo()" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mb-6">
+                        Show Grid Comparison
+                    </button>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Bootstrap Grid System</h3>
+                    <pre><code class="language-html">&lt;!-- Bootstrap Grid --&gt;
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5 class="card-title"&gt;Card 1&lt;/h5&gt;
+          &lt;p class="card-text"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5 class="card-title"&gt;Card 2&lt;/h5&gt;
+          &lt;p class="card-text"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5 class="card-title"&gt;Card 3&lt;/h5&gt;
+          &lt;p class="card-text"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 mt-8">Tailwind Flexbox Approach (Bootstrap-like)</h3>
+                    <pre><code class="language-html">&lt;!-- Tailwind Flexbox (similar to Bootstrap) --&gt;
+&lt;div class="container mx-auto px-4"&gt;
+  &lt;div class="flex flex-wrap -mx-4"&gt;
+    &lt;div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6"&gt;
+      &lt;div class="bg-white rounded-lg shadow-md border"&gt;
+        &lt;div class="p-6"&gt;
+          &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 1&lt;/h5&gt;
+          &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6"&gt;
+      &lt;div class="bg-white rounded-lg shadow-md border"&gt;
+        &lt;div class="p-6"&gt;
+          &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 2&lt;/h5&gt;
+          &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6"&gt;
+      &lt;div class="bg-white rounded-lg shadow-md border"&gt;
+        &lt;div class="p-6"&gt;
+          &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 3&lt;/h5&gt;
+          &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 mt-8">Tailwind CSS Grid Approach (Modern)</h3>
+                    <pre><code class="language-html">&lt;!-- Tailwind CSS Grid (modern approach) --&gt;
+&lt;div class="container mx-auto px-4"&gt;
+  &lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+    &lt;div class="bg-white rounded-lg shadow-md border p-6"&gt;
+      &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 1&lt;/h5&gt;
+      &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="bg-white rounded-lg shadow-md border p-6"&gt;
+      &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 2&lt;/h5&gt;
+      &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="bg-white rounded-lg shadow-md border p-6"&gt;
+      &lt;h5 class="text-xl font-semibold text-gray-900 mb-2"&gt;Card 3&lt;/h5&gt;
+      &lt;p class="text-gray-600"&gt;Some content here&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <div class="mt-8 grid md:grid-cols-3 gap-6">
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <h4 class="font-semibold text-purple-800 mb-2">Bootstrap Grid</h4>
+                            <ul class="text-sm text-purple-700 space-y-1">
+                                <li>• Requires .container, .row, .col</li>
+                                <li>• 12-column system</li>
+                                <li>• Predefined breakpoints</li>
+                                <li>• Gutter system with negative margins</li>
+                            </ul>
+                        </div>
+                        <div class="bg-cyan-50 p-4 rounded-lg border border-cyan-200">
+                            <h4 class="font-semibold text-cyan-800 mb-2">Tailwind Flexbox</h4>
+                            <ul class="text-sm text-cyan-700 space-y-1">
+                                <li>• Direct flex classes</li>
+                                <li>• Fractional widths (1/2, 1/3, 1/4)</li>
+                                <li>• Custom breakpoints</li>
+                                <li>• Flexible spacing with px/mx</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2">Tailwind CSS Grid</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Modern CSS Grid</li>
+                                <li>• Auto-fit and auto-fill</li>
+                                <li>• Gap utilities</li>
+                                <li>• More layout control</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border">
+                        <h4 class="font-semibold text-gray-800 mb-3">🎯 Pro Tip: Choose Your Approach</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Use Flexbox when:</strong></p>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• You need Bootstrap-like behavior</li>
+                                    <li>• Content length varies significantly</li>
+                                    <li>• You need items to wrap naturally</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Use CSS Grid when:</strong></p>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• You want equal-height items</li>
+                                    <li>• You need precise layout control</li>
+                                    <li>• Content is fairly uniform</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Component Comparisons -->
+            <div x-show="activeSection === 'components'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Common Components: Side-by-Side</h2>
+                    
+                    <div class="mb-6">
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="component in componentExamples" :key="component.id">
+                                <button @click="activeComponent = component.id"
+                                        :class="activeComponent === component.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+                                        class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                        x-text="component.name">
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <button @click="loadComponentDemo()" 
+                            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors mb-6">
+                        Show Component Comparison
+                    </button>
+
+                    <!-- Card Component -->
+                    <div x-show="activeComponent === 'card'" x-transition>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Card Component</h3>
+                        <div class="comparison-split">
+                            <div class="bootstrap-side">
+                                <h4 class="font-semibold text-purple-800 mb-3">Bootstrap Card</h4>
+                                <pre><code class="language-html">&lt;div class="card" style="width: 18rem;"&gt;
+  &lt;img src="..." class="card-img-top" alt="..."&gt;
+  &lt;div class="card-body"&gt;
+    &lt;h5 class="card-title"&gt;Card title&lt;/h5&gt;
+    &lt;p class="card-text"&gt;Some quick example text.&lt;/p&gt;
+    &lt;a href="#" class="btn btn-primary"&gt;Go somewhere&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                            <div class="tailwind-side">
+                                <h4 class="font-semibold text-cyan-800 mb-3">Tailwind Card</h4>
+                                <pre><code class="language-html">&lt;div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md"&gt;
+  &lt;img class="rounded-t-lg w-full h-48 object-cover" src="..." alt=""&gt;
+  &lt;div class="p-5"&gt;
+    &lt;h5 class="mb-2 text-2xl font-bold text-gray-900"&gt;Card title&lt;/h5&gt;
+    &lt;p class="mb-3 text-gray-700"&gt;Some quick example text.&lt;/p&gt;
+    &lt;a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800"&gt;
+      Go somewhere
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Button Component -->
+                    <div x-show="activeComponent === 'button'" x-transition>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Button Component</h3>
+                        <div class="comparison-split">
+                            <div class="bootstrap-side">
+                                <h4 class="font-semibold text-purple-800 mb-3">Bootstrap Buttons</h4>
+                                <pre><code class="language-html">&lt;!-- Bootstrap Buttons --&gt;
+&lt;button type="button" class="btn btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button type="button" class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button type="button" class="btn btn-success"&gt;Success&lt;/button&gt;
+&lt;button type="button" class="btn btn-danger"&gt;Danger&lt;/button&gt;
+
+&lt;!-- Sizes --&gt;
+&lt;button type="button" class="btn btn-primary btn-lg"&gt;Large&lt;/button&gt;
+&lt;button type="button" class="btn btn-primary btn-sm"&gt;Small&lt;/button&gt;
+
+&lt;!-- Outline --&gt;
+&lt;button type="button" class="btn btn-outline-primary"&gt;Outline&lt;/button&gt;</code></pre>
+                            </div>
+                            <div class="tailwind-side">
+                                <h4 class="font-semibold text-cyan-800 mb-3">Tailwind Buttons</h4>
+                                <pre><code class="language-html">&lt;!-- Tailwind Buttons --&gt;
+&lt;button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"&gt;Primary&lt;/button&gt;
+&lt;button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"&gt;Secondary&lt;/button&gt;
+&lt;button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"&gt;Success&lt;/button&gt;
+&lt;button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"&gt;Danger&lt;/button&gt;
+
+&lt;!-- Sizes --&gt;
+&lt;button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded text-lg"&gt;Large&lt;/button&gt;
+&lt;button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"&gt;Small&lt;/button&gt;
+
+&lt;!-- Outline --&gt;
+&lt;button class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-bold py-2 px-4 rounded"&gt;Outline&lt;/button&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Component -->
+                    <div x-show="activeComponent === 'form'" x-transition>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Form Component</h3>
+                        <div class="comparison-split">
+                            <div class="bootstrap-side">
+                                <h4 class="font-semibold text-purple-800 mb-3">Bootstrap Form</h4>
+                                <pre><code class="language-html">&lt;form&gt;
+  &lt;div class="mb-3"&gt;
+    &lt;label for="email" class="form-label"&gt;Email&lt;/label&gt;
+    &lt;input type="email" class="form-control" id="email"&gt;
+    &lt;div class="form-text"&gt;We'll never share your email.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="mb-3"&gt;
+    &lt;label for="password" class="form-label"&gt;Password&lt;/label&gt;
+    &lt;input type="password" class="form-control" id="password"&gt;
+  &lt;/div&gt;
+  &lt;div class="mb-3 form-check"&gt;
+    &lt;input type="checkbox" class="form-check-input" id="check"&gt;
+    &lt;label class="form-check-label" for="check"&gt;Remember me&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;button type="submit" class="btn btn-primary"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                            </div>
+                            <div class="tailwind-side">
+                                <h4 class="font-semibold text-cyan-800 mb-3">Tailwind Form</h4>
+                                <pre><code class="language-html">&lt;form class="space-y-6"&gt;
+  &lt;div&gt;
+    &lt;label for="email" class="block text-sm font-medium text-gray-700"&gt;Email&lt;/label&gt;
+    &lt;input type="email" id="email" 
+           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"&gt;
+    &lt;p class="mt-2 text-sm text-gray-500"&gt;We'll never share your email.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;label for="password" class="block text-sm font-medium text-gray-700"&gt;Password&lt;/label&gt;
+    &lt;input type="password" id="password"
+           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"&gt;
+  &lt;/div&gt;
+  &lt;div class="flex items-center"&gt;
+    &lt;input type="checkbox" id="check" 
+           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"&gt;
+    &lt;label for="check" class="ml-2 block text-sm text-gray-900"&gt;Remember me&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;button type="submit" 
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"&gt;
+    Submit
+  &lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navbar Component -->
+                    <div x-show="activeComponent === 'navbar'" x-transition>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Navigation Component</h3>
+                        <div class="comparison-split">
+                            <div class="bootstrap-side">
+                                <h4 class="font-semibold text-purple-800 mb-3">Bootstrap Navbar</h4>
+                                <pre><code class="language-html">&lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+  &lt;div class="container-fluid"&gt;
+    &lt;a class="navbar-brand" href="#"&gt;Brand&lt;/a&gt;
+    &lt;button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"&gt;
+      &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;div class="collapse navbar-collapse" id="navbarNav"&gt;
+      &lt;ul class="navbar-nav"&gt;
+        &lt;li class="nav-item"&gt;
+          &lt;a class="nav-link active" href="#"&gt;Home&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class="nav-item"&gt;
+          &lt;a class="nav-link" href="#"&gt;Features&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class="nav-item"&gt;
+          &lt;a class="nav-link" href="#"&gt;Pricing&lt;/a&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+                            </div>
+                            <div class="tailwind-side">
+                                <h4 class="font-semibold text-cyan-800 mb-3">Tailwind Navbar</h4>
+                                <pre><code class="language-html">&lt;nav class="bg-gray-800"&gt;
+  &lt;div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"&gt;
+    &lt;div class="flex items-center justify-between h-16"&gt;
+      &lt;div class="flex items-center"&gt;
+        &lt;a href="#" class="text-white text-xl font-bold"&gt;Brand&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class="hidden md:block"&gt;
+        &lt;div class="ml-10 flex items-baseline space-x-4"&gt;
+          &lt;a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"&gt;Home&lt;/a&gt;
+          &lt;a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"&gt;Features&lt;/a&gt;
+          &lt;a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"&gt;Pricing&lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="md:hidden"&gt;
+        &lt;button class="text-gray-400 hover:text-white focus:outline-none focus:text-white"&gt;
+          &lt;svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"&gt;
+            &lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /&gt;
+          &lt;/svg&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Translator -->
+            <div x-show="activeSection === 'translator'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Interactive Class Translator</h2>
+                    
+                    <div class="mb-8">
+                        <div class="bg-gradient-to-r from-purple-50 to-cyan-50 p-6 rounded-lg border mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Try it out!</h3>
+                            <p class="text-gray-700 mb-4">Enter Bootstrap classes and see their Tailwind equivalents:</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bootstrap Classes</label>
+                                    <textarea 
+                                        x-model="translatorInput"
+                                        @input="translateClasses()"
+                                        class="translator-input w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Enter Bootstrap classes like: btn btn-primary, card card-body, col-md-6"
+                                    ></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tailwind Equivalent</label>
+                                    <div class="translator-input w-full h-32 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 overflow-y-auto">
+                                        <pre class="text-sm text-gray-800 whitespace-pre-wrap" x-text="translatorOutput"></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Common Class Mappings</h3>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Layout Classes -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Layout</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.container</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.container mx-auto</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.row</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.flex -mx-4</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.col-6</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.w-1/2 px-4</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.col-md-4</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.w-full md:w-1/3 px-4</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spacing Classes -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Spacing</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.m-3</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.m-3</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.p-4</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.p-4</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.mt-5</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.mt-5</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.mx-auto</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.mx-auto</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Color Classes -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Colors</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.text-primary</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.text-blue-600</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.bg-success</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.bg-green-500</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.text-danger</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.text-red-600</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.bg-dark</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.bg-gray-800</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Button Classes -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Buttons</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.btn</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.px-4 py-2 font-medium</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.btn-primary</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.bg-blue-600 text-white</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.btn-lg</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.px-6 py-3 text-lg</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.btn-outline-primary</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.border border-blue-600 text-blue-600</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Typography Classes -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Typography</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.h1</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.text-5xl font-bold</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.lead</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.text-xl font-light</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.text-center</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.text-center</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.font-weight-bold</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.font-bold</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Display & Position -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3">Display & Position</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.d-flex</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.flex</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.d-none</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.hidden</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.justify-content-center</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.justify-center</code>
+                                </div>
+                                <div class="flex justify-between">
+                                    <code class="text-purple-600">.align-items-center</code>
+                                    <span>→</span>
+                                    <code class="text-cyan-600">.items-center</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Migration Strategy -->
+            <div x-show="activeSection === 'migration'" x-transition class="space-y-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Migration Strategy & Best Practices</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">🎯 Gradual Migration Approach</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4">1</span>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Start with New Components</h4>
+                                        <p class="text-gray-600 text-sm">Build new features with Tailwind while keeping existing Bootstrap components.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4">2</span>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Page-by-Page Conversion</h4>
+                                        <p class="text-gray-600 text-sm">Convert one page at a time, starting with the least complex ones.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4">3</span>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Component-by-Component</h4>
+                                        <p class="text-gray-600 text-sm">Replace Bootstrap components one at a time within existing pages.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4">4</span>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Final Cleanup</h4>
+                                        <p class="text-gray-600 text-sm">Remove Bootstrap dependencies once fully migrated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">💡 Pro Tips for Success</h3>
+                            <div class="space-y-3">
+                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <h4 class="font-semibold text-green-800 mb-1">Create Component Abstractions</h4>
+                                    <p class="text-green-700 text-sm">Use Alpine.js or your framework to create reusable components and avoid class repetition.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                    <h4 class="font-semibold text-blue-800 mb-1">Use @apply for Common Patterns</h4>
+                                    <p class="text-blue-700 text-sm">Extract common utility combinations into CSS classes when needed.</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                                    <h4 class="font-semibold text-purple-800 mb-1">Start with Design System</h4>
+                                    <p class="text-purple-700 text-sm">Define your color palette, spacing scale, and typography first.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                                    <h4 class="font-semibold text-orange-800 mb-1">Use Tailwind CSS IntelliSense</h4>
+                                    <p class="text-orange-700 text-sm">Install the VS Code extension for autocomplete and class suggestions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">⚠️ Common Pain Points & Solutions</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-semibold text-red-800 mb-2">😖 "Too Many Classes!"</h4>
+                                <div class="text-red-700 text-sm space-y-2">
+                                    <p><strong>Problem:</strong> HTML looks cluttered with utility classes</p>
+                                    <p><strong>Solution:</strong> Extract components, use @apply, or embrace the utility-first philosophy</p>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                <h4 class="font-semibold text-yellow-800 mb-2">🤔 "Can't Remember Class Names"</h4>
+                                <div class="text-yellow-700 text-sm space-y-2">
+                                    <p><strong>Problem:</strong> Forgetting utility class names</p>
+                                    <p><strong>Solution:</strong> Use IntelliSense, keep docs open, practice with small projects</p>
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <h4 class="font-semibold text-blue-800 mb-2">🎨 "How Do I Match My Design?"</h4>
+                                <div class="text-blue-700 text-sm space-y-2">
+                                    <p><strong>Problem:</strong> Custom design doesn't match default utilities</p>
+                                    <p><strong>Solution:</strong> Customize tailwind.config.js, use arbitrary values: <code>bg-[#custom]</code></p>
+                                </div>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-semibold text-green-800 mb-2">🔄 "Missing Bootstrap Components"</h4>
+                                <div class="text-green-700 text-sm space-y-2">
+                                    <p><strong>Problem:</strong> No pre-built components like Bootstrap</p>
+                                    <p><strong>Solution:</strong> Use Tailwind UI, Headless UI, or build your own component library</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border">
+                        <h4 class="font-semibold text-gray-800 mb-3">🚀 Sample Migration Plan</h4>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <h5 class="font-semibold text-green-800 mb-2">Week 1-2: Setup</h5>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• Install Tailwind CSS</li>
+                                    <li>• Configure build process</li>
+                                    <li>• Set up VS Code extension</li>
+                                    <li>• Create design tokens</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-blue-800 mb-2">Week 3-6: Conversion</h5>
+                                <ul class="text-sm text-blue-700 space-y-1">
+                                    <li>• Convert utility classes first</li>
+                                    <li>• Rebuild common components</li>
+                                    <li>• Update grid systems</li>
+                                    <li>• Test responsiveness</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-purple-800 mb-2">Week 7-8: Polish</h5>
+                                <ul class="text-sm text-purple-700 space-y-1">
+                                    <li>• Remove Bootstrap dependency</li>
+                                    <li>• Optimize bundle size</li>
+                                    <li>• Create component library</li>
+                                    <li>• Document patterns</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t mt-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Quick Reference Cheat Sheet</h3>
+                
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-800 mb-2">Bootstrap Mindset</h4>
+                        <ul class="text-sm text-purple-700 space-y-1">
+                            <li>• Think in components</li>
+                            <li>• Semantic class names</li>
+                            <li>• Override with custom CSS</li>
+                            <li>• SCSS variable theming</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-cyan-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-cyan-800 mb-2">Tailwind Mindset</h4>
+                        <ul class="text-sm text-cyan-700 space-y-1">
+                            <li>• Think in utilities</li>
+                            <li>• Descriptive class names</li>
+                            <li>• Compose with utilities</li>
+                            <li>• Config file customization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Key Advantages</h4>
+                        <ul class="text-sm text-green-700 space-y-1">
+                            <li>• Smaller bundle size</li>
+                            <li>• No CSS conflicts</li>
+                            <li>• Consistent design system</li>
+                            <li>• Faster development</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-orange-800 mb-2">Getting Help</h4>
+                        <ul class="text-sm text-orange-700 space-y-1">
+                            <li>• Official Tailwind docs</li>
+                            <li>• Tailwind UI components</li>
+                            <li>• Community Discord</li>
+                            <li>• VS Code IntelliSense</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p class="text-center text-gray-500 text-sm">
+                    Remember: The goal isn't to memorize every utility class, but to understand the system and let tooling help you
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function bootstrapToTailwind() {
+            return {
+                activeSection: 'philosophy',
+                showComparison: true,
+                activeComponent: 'card',
+                translatorInput: 'btn btn-primary btn-lg\ncard card-body\ncol-md-6 col-lg-4\ntext-center font-weight-bold',
+                translatorOutput: '',
+                
+                sections: [
+                    {id: 'philosophy', name: 'Philosophy'},
+                    {id: 'grids', name: 'Grid Systems'},
+                    {id: 'components', name: 'Components'},
+                    {id: 'translator', name: 'Class Translator'},
+                    {id: 'migration', name: 'Migration Guide'}
+                ],
+                
+                componentExamples: [
+                    {id: 'card', name: 'Card'},
+                    {id: 'button', name: 'Button'},
+                    {id: 'form', name: 'Form'},
+                    {id: 'navbar', name: 'Navbar'}
+                ],
+                
+                classMap: {
+                    // Layout
+                    'container': 'container mx-auto px-4',
+                    'container-fluid': 'w-full px-4',
+                    'row': 'flex flex-wrap -mx-4',
+                    'col': 'flex-1 px-4',
+                    'col-1': 'w-1/12 px-4',
+                    'col-2': 'w-2/12 px-4',
+                    'col-3': 'w-3/12 px-4',
+                    'col-4': 'w-4/12 px-4',
+                    'col-5': 'w-5/12 px-4',
+                    'col-6': 'w-6/12 px-4',
+                    'col-7': 'w-7/12 px-4',
+                    'col-8': 'w-8/12 px-4',
+                    'col-9': 'w-9/12 px-4',
+                    'col-10': 'w-10/12 px-4',
+                    'col-11': 'w-11/12 px-4',
+                    'col-12': 'w-full px-4',
+                    'col-md-1': 'w-full md:w-1/12 px-4',
+                    'col-md-2': 'w-full md:w-2/12 px-4',
+                    'col-md-3': 'w-full md:w-3/12 px-4',
+                    'col-md-4': 'w-full md:w-4/12 px-4',
+                    'col-md-5': 'w-full md:w-5/12 px-4',
+                    'col-md-6': 'w-full md:w-6/12 px-4',
+                    'col-md-7': 'w-full md:w-7/12 px-4',
+                    'col-md-8': 'w-full md:w-8/12 px-4',
+                    'col-md-9': 'w-full md:w-9/12 px-4',
+                    'col-md-10': 'w-full md:w-10/12 px-4',
+                    'col-md-11': 'w-full md:w-11/12 px-4',
+                    'col-md-12': 'w-full px-4',
+                    'col-lg-1': 'w-full lg:w-1/12 px-4',
+                    'col-lg-2': 'w-full lg:w-2/12 px-4',
+                    'col-lg-3': 'w-full lg:w-3/12 px-4',
+                    'col-lg-4': 'w-full lg:w-4/12 px-4',
+                    'col-lg-5': 'w-full lg:w-5/12 px-4',
+                    'col-lg-6': 'w-full lg:w-6/12 px-4',
+                    'col-lg-7': 'w-full lg:w-7/12 px-4',
+                    'col-lg-8': 'w-full lg:w-8/12 px-4',
+                    'col-lg-9': 'w-full lg:w-9/12 px-4',
+                    'col-lg-10': 'w-full lg:w-10/12 px-4',
+                    'col-lg-11': 'w-full lg:w-11/12 px-4',
+                    'col-lg-12': 'w-full px-4',
+                    
+                    // Buttons
+                    'btn': 'inline-flex items-center px-4 py-2 font-medium rounded',
+                    'btn-primary': 'bg-blue-600 text-white hover:bg-blue-700',
+                    'btn-secondary': 'bg-gray-600 text-white hover:bg-gray-700',
+                    'btn-success': 'bg-green-600 text-white hover:bg-green-700',
+                    'btn-danger': 'bg-red-600 text-white hover:bg-red-700',
+                    'btn-warning': 'bg-yellow-500 text-white hover:bg-yellow-600',
+                    'btn-info': 'bg-cyan-600 text-white hover:bg-cyan-700',
+                    'btn-light': 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+                    'btn-dark': 'bg-gray-800 text-white hover:bg-gray-900',
+                    'btn-lg': 'px-6 py-3 text-lg',
+                    'btn-sm': 'px-3 py-1 text-sm',
+                    'btn-outline-primary': 'border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white',
+                    'btn-outline-secondary': 'border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white',
+                    
+                    // Colors
+                    'text-primary': 'text-blue-600',
+                    'text-secondary': 'text-gray-600',
+                    'text-success': 'text-green-600',
+                    'text-danger': 'text-red-600',
+                    'text-warning': 'text-yellow-600',
+                    'text-info': 'text-cyan-600',
+                    'text-light': 'text-gray-100',
+                    'text-dark': 'text-gray-800',
+                    'text-muted': 'text-gray-500',
+                    'bg-primary': 'bg-blue-600',
+                    'bg-secondary': 'bg-gray-600',
+                    'bg-success': 'bg-green-600',
+                    'bg-danger': 'bg-red-600',
+                    'bg-warning': 'bg-yellow-500',
+                    'bg-info': 'bg-cyan-600',
+                    'bg-light': 'bg-gray-100',
+                    'bg-dark': 'bg-gray-800',
+                    
+                    // Cards
+                    'card': 'bg-white border border-gray-200 rounded-lg shadow-sm',
+                    'card-body': 'p-6',
+                    'card-header': 'px-6 py-4 border-b border-gray-200 bg-gray-50',
+                    'card-footer': 'px-6 py-4 border-t border-gray-200 bg-gray-50',
+                    'card-title': 'text-xl font-semibold text-gray-900 mb-2',
+                    'card-text': 'text-gray-600',
+                    
+                    // Display
+                    'd-none': 'hidden',
+                    'd-inline': 'inline',
+                    'd-inline-block': 'inline-block',
+                    'd-block': 'block',
+                    'd-flex': 'flex',
+                    'd-inline-flex': 'inline-flex',
+                    'd-grid': 'grid',
+                    
+                    // Flexbox
+                    'justify-content-start': 'justify-start',
+                    'justify-content-end': 'justify-end',
+                    'justify-content-center': 'justify-center',
+                    'justify-content-between': 'justify-between',
+                    'justify-content-around': 'justify-around',
+                    'align-items-start': 'items-start',
+                    'align-items-end': 'items-end',
+                    'align-items-center': 'items-center',
+                    'align-items-stretch': 'items-stretch',
+                    'flex-column': 'flex-col',
+                    'flex-row': 'flex-row',
+                    'flex-wrap': 'flex-wrap',
+                    'flex-nowrap': 'flex-nowrap',
+                    
+                    // Typography
+                    'h1': 'text-5xl font-bold',
+                    'h2': 'text-4xl font-bold',
+                    'h3': 'text-3xl font-bold',
+                    'h4': 'text-2xl font-bold',
+                    'h5': 'text-xl font-bold',
+                    'h6': 'text-lg font-bold',
+                    'lead': 'text-xl font-light',
+                    'small': 'text-sm',
+                    'text-center': 'text-center',
+                    'text-left': 'text-left',
+                    'text-right': 'text-right',
+                    'font-weight-bold': 'font-bold',
+                    'font-weight-normal': 'font-normal',
+                    'font-weight-light': 'font-light',
+                    'text-uppercase': 'uppercase',
+                    'text-lowercase': 'lowercase',
+                    'text-capitalize': 'capitalize'
+                },
+                
+                init() {
+                    this.translateClasses();
+                },
+                
+                translateClasses() {
+                    const input = this.translatorInput.trim();
+                    if (!input) {
+                        this.translatorOutput = '';
+                        return;
+                    }
+                    
+                    const lines = input.split('\n');
+                    const results = [];
+                    
+                    lines.forEach(line => {
+                        const classes = line.trim().split(/\s+/);
+                        const translated = [];
+                        
+                        classes.forEach(cls => {
+                            if (this.classMap[cls]) {
+                                translated.push(this.classMap[cls]);
+                            } else {
+                                translated.push(`/* ${cls} - no direct equivalent */`);
+                            }
+                        });
+                        
+                        results.push(translated.join(' '));
+                    });
+                    
+                    this.translatorOutput = results.join('\n\n');
+                },
+                
+                // Demo functions
+                loadPhilosophyDemo() {
+                    const bootstrapDemo = `
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Bootstrap Card</h5>
+                                <p class="card-text">Component-first thinking</p>
+                                <a href="#" class="btn btn-primary">Button</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const tailwindDemo = `
+                        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md">
+                            <div class="p-5">
+                                <h5 class="mb-2 text-2xl font-bold text-gray-900">Tailwind Card</h5>
+                                <p class="mb-3 text-gray-700">Utility-first thinking</p>
+                                <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                                    Button
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('bootstrap-demo').innerHTML = bootstrapDemo;
+                    document.getElementById('tailwind-demo').innerHTML = tailwindDemo;
+                },
+                
+                loadGridDemo() {
+                    const bootstrapDemo = `
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card 1</h5>
+                                            <p class="card-text">Bootstrap grid</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card 2</h5>
+                                            <p class="card-text">12-column system</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card 3</h5>
+                                            <p class="card-text">Requires rows</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const tailwindDemo = `
+                        <div class="container mx-auto px-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                                    <h5 class="text-xl font-bold text-gray-900 mb-2">Card 1</h5>
+                                    <p class="text-gray-600">CSS Grid</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                                    <h5 class="text-xl font-bold text-gray-900 mb-2">Card 2</h5>
+                                    <p class="text-gray-600">Fractional widths</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                                    <h5 class="text-xl font-bold text-gray-900 mb-2">Card 3</h5>
+                                    <p class="text-gray-600">No wrapper needed</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('bootstrap-demo').innerHTML = bootstrapDemo;
+                    document.getElementById('tailwind-demo').innerHTML = tailwindDemo;
+                },
+                
+                loadComponentDemo() {
+                    if (this.activeComponent === 'card') {
+                        this.loadPhilosophyDemo();
+                    } else if (this.activeComponent === 'button') {
+                        const bootstrapDemo = `
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="button" class="btn btn-primary">Primary</button>
+                                <button type="button" class="btn btn-secondary">Secondary</button>
+                                <button type="button" class="btn btn-success">Success</button>
+                                <button type="button" class="btn btn-lg btn-outline-primary">Large Outline</button>
+                            </div>
+                        `;
+                        
+                        const tailwindDemo = `
+                            <div class="flex gap-2 flex-wrap">
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Primary</button>
+                                <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Secondary</button>
+                                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Success</button>
+                                <button class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-bold py-3 px-6 rounded text-lg">Large Outline</button>
+                            </div>
+                        `;
+                        
+                        document.getElementById('bootstrap-demo').innerHTML = bootstrapDemo;
+                        document.getElementById('tailwind-demo').innerHTML = tailwindDemo;
+                    }
+                }
+            }
+        }
+        
+        // Initialize shared header
+        injectSharedHeader('bootstrap-tailwind');
+    </script>
+</body>
+</html>
