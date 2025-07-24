@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Update Comparison Tutorial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">DOM Update Tutorial</h1>
+        <p class="text-center text-gray-600 mb-12">Compare how different frameworks handle DOM updates</p>
+        
+        <!-- Alpine.js Example -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-blue-600">Alpine.js - Declarative & Simple</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Basic Counter</h3>
+                    <div x-data="{ count: 0 }" class="space-y-3">
+                        <p class="text-3xl font-bold text-green-600" x-text="count"></p>
+                        <div class="space-x-2">
+                            <button @click="count++" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+</button>
+                            <button @click="count--" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>
+                            <button @click="count = 0" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Todo List</h3>
+                    <div x-data="{ 
+                        todos: ['Learn Alpine.js', 'Build something cool'], 
+                        newTodo: '' 
+                    }" class="space-y-3">
+                        <input x-model="newTodo" @keyup.enter="todos.push(newTodo); newTodo = ''" 
+                               placeholder="Add todo..." class="w-full border rounded px-3 py-2">
+                        <ul class="space-y-2">
+                            <template x-for="(todo, index) in todos" :key="index">
+                                <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                    <span x-text="todo"></span>
+                                    <button @click="todos.splice(index, 1)" class="text-red-500 hover:text-red-700">×</button>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-semibold mb-2">Alpine.js Code:</h4>
+                <pre class="text-sm overflow-x-auto"><code>&lt;div x-data="{ count: 0 }"&gt;
+    &lt;p x-text="count"&gt;&lt;/p&gt;
+    &lt;button @click="count++"&gt;+&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                <p class="text-sm text-gray-600 mt-2"><strong>Pros:</strong> No build step, declarative, minimal syntax</p>
+            </div>
+        </div>
+
+        <!-- Vue.js Example -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-green-600">Vue.js - Reactive & Component-Based</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div id="vue-app-1"></div>
+                <div id="vue-app-2"></div>
+            </div>
+            <div class="mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-semibold mb-2">Vue.js Code (Composition API):</h4>
+                <pre class="text-sm overflow-x-auto"><code>const { createApp, ref } = Vue
+createApp({
+  setup() {
+    const count = ref(0)
+    return { count }
+  }
+}).mount('#app')</code></pre>
+                <p class="text-sm text-gray-600 mt-2"><strong>Pros:</strong> Reactive data, component system, excellent DX</p>
+            </div>
+        </div>
+
+        <!-- React Example -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-600">React - State-Driven</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div id="react-app-1"></div>
+                <div id="react-app-2"></div>
+            </div>
+            <div class="mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-semibold mb-2">React Code (Hooks):</h4>
+                <pre class="text-sm overflow-x-auto"><code>function Counter() {
+  const [count, setCount] = React.useState(0)
+  return (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      {count}
+    &lt;/button&gt;
+  )
+}</code></pre>
+                <p class="text-sm text-gray-600 mt-2"><strong>Pros:</strong> Explicit state management, huge ecosystem, JSX flexibility</p>
+            </div>
+        </div>
+
+        <!-- jQuery Example -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-600">jQuery - Manual DOM Manipulation</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Basic Counter</h3>
+                    <div class="space-y-3">
+                        <p class="text-3xl font-bold text-green-600" id="jquery-count">0</p>
+                        <div class="space-x-2">
+                            <button id="jquery-plus" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+</button>
+                            <button id="jquery-minus" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>
+                            <button id="jquery-reset" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Todo List</h3>
+                    <div class="space-y-3">
+                        <input id="jquery-todo-input" placeholder="Add todo..." class="w-full border rounded px-3 py-2">
+                        <button id="jquery-add-todo" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add</button>
+                        <ul id="jquery-todos" class="space-y-2">
+                            <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>Learn jQuery</span>
+                                <button class="jquery-remove text-red-500 hover:text-red-700">×</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-semibold mb-2">jQuery Code:</h4>
+                <pre class="text-sm overflow-x-auto"><code>let count = 0
+$('#plus').click(() => {
+    count++
+    $('#count').text(count)
+})</code></pre>
+                <p class="text-sm text-gray-600 mt-2"><strong>Pros:</strong> Direct control, no learning curve, works everywhere</p>
+            </div>
+        </div>
+
+        <!-- Code Line Comparison -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-red-600">🔥 Code Comparison - Same Simple Counter</h2>
+            <p class="text-gray-600 mb-6">Look at how much code each framework requires for the EXACT same functionality:</p>
+            
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Alpine.js Code -->
+                <div class="border-2 border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-blue-600">Alpine.js</h3>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">3 Lines</span>
+                    </div>
+                    <pre class="text-sm bg-blue-50 p-3 rounded overflow-x-auto"><code>&lt;div x-data="{ count: 0 }"&gt;
+    &lt;p x-text="count"&gt;&lt;/p&gt;
+    &lt;button @click="count++"&gt;+&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                    <p class="text-xs text-blue-600 mt-2">✅ Everything in HTML attributes - super compact!</p>
+                </div>
+
+                <!-- Vue.js Code -->
+                <div class="border-2 border-green-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-green-600">Vue.js</h3>
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold">10 Lines</span>
+                    </div>
+                    <pre class="text-sm bg-green-50 p-3 rounded overflow-x-auto"><code>&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;{{ count }}&lt;/p&gt;
+        &lt;button @click="count++"&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue'
+const count = ref(0)
+&lt;/script&gt;</code></pre>
+                    <p class="text-xs text-green-600 mt-2">📦 Separate template + script sections</p>
+                </div>
+
+                <!-- React Code -->
+                <div class="border-2 border-cyan-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-cyan-600">React</h3>
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold">8 Lines</span>
+                    </div>
+                    <pre class="text-sm bg-cyan-50 p-3 rounded overflow-x-auto"><code>function Counter() {
+    const [count, setCount] = useState(0)
+    
+    return (
+        &lt;div&gt;
+            &lt;p&gt;{count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+    )
+}</code></pre>
+                    <p class="text-xs text-cyan-600 mt-2">⚙️ Explicit state management with setters</p>
+                </div>
+
+                <!-- jQuery Code -->
+                <div class="border-2 border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-yellow-600">jQuery</h3>
+                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-bold">12 Lines</span>
+                    </div>
+                    <pre class="text-sm bg-yellow-50 p-3 rounded overflow-x-auto"><code>&lt;!-- HTML --&gt;
+&lt;div&gt;
+    &lt;p id="count"&gt;0&lt;/p&gt;
+    &lt;button id="plus"&gt;+&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+let count = 0
+$('#plus').click(() =&gt; {
+    count++
+    $('#count').text(count)
+})
+&lt;/script&gt;</code></pre>
+                    <p class="text-xs text-yellow-600 mt-2">🔧 Manual DOM updates + separate HTML/JS</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border-l-4 border-blue-500">
+                <h4 class="font-bold text-lg mb-2">📊 The Verdict:</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Alpine.js:</strong> <span class="text-green-600 font-bold">70% less code</span> than others - everything lives in HTML attributes</p>
+                    <p><strong>Vue.js:</strong> Clean separation but requires template + script sections</p>
+                    <p><strong>React:</strong> Explicit state management with useState and setter functions</p>
+                    <p><strong>jQuery:</strong> Most verbose - manual DOM manipulation + separate HTML</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Feature Comparison</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-2 text-left">Framework</th>
+                            <th class="px-4 py-2 text-left">Lines of Code</th>
+                            <th class="px-4 py-2 text-left">DOM Update Style</th>
+                            <th class="px-4 py-2 text-left">Learning Curve</th>
+                            <th class="px-4 py-2 text-left">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr class="bg-green-50">
+                            <td class="px-4 py-2 font-semibold text-blue-600">Alpine.js</td>
+                            <td class="px-4 py-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">3 Lines</span></td>
+                            <td class="px-4 py-2">Declarative, automatic</td>
+                            <td class="px-4 py-2">Very Easy</td>
+                            <td class="px-4 py-2">Server-rendered apps</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-green-600">Vue.js</td>
+                            <td class="px-4 py-2"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-bold">10 Lines</span></td>
+                            <td class="px-4 py-2">Reactive, automatic</td>
+                            <td class="px-4 py-2">Easy</td>
+                            <td class="px-4 py-2">SPAs, component apps</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-cyan-600">React</td>
+                            <td class="px-4 py-2"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-bold">8 Lines</span></td>
+                            <td class="px-4 py-2">State-driven, automatic</td>
+                            <td class="px-4 py-2">Moderate</td>
+                            <td class="px-4 py-2">Large apps, enterprise</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-yellow-600">jQuery</td>
+                            <td class="px-4 py-2"><span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-bold">12 Lines</span></td>
+                            <td class="px-4 py-2">Manual, imperative</td>
+                            <td class="px-4 py-2">Easy</td>
+                            <td class="px-4 py-2">Legacy apps, simple tasks</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        // React Counter Component
+        function ReactCounter() {
+            const [count, setCount] = React.useState(0)
+            
+            return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-3">Basic Counter</h3>
+                    <div className="space-y-3">
+                        <p className="text-3xl font-bold text-green-600">{count}</p>
+                        <div className="space-x-2">
+                            <button onClick={() => setCount(count + 1)} 
+                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+</button>
+                            <button onClick={() => setCount(count - 1)} 
+                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>
+                            <button onClick={() => setCount(0)} 
+                                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        // React Todo Component
+        function ReactTodos() {
+            const [todos, setTodos] = React.useState(['Learn React', 'Build something cool'])
+            const [newTodo, setNewTodo] = React.useState('')
+            
+            const addTodo = () => {
+                if (newTodo.trim()) {
+                    setTodos([...todos, newTodo])
+                    setNewTodo('')
+                }
+            }
+            
+            const removeTodo = (index) => {
+                setTodos(todos.filter((_, i) => i !== index))
+            }
+            
+            return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-3">Todo List</h3>
+                    <div className="space-y-3">
+                        <input 
+                            value={newTodo}
+                            onChange={(e) => setNewTodo(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+                            placeholder="Add todo..." 
+                            className="w-full border rounded px-3 py-2" />
+                        <ul className="space-y-2">
+                            {todos.map((todo, index) => (
+                                <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                    <span>{todo}</span>
+                                    <button onClick={() => removeTodo(index)} 
+                                            className="text-red-500 hover:text-red-700">×</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            )
+        }
+
+        // Render React components
+        ReactDOM.render(<ReactCounter />, document.getElementById('react-app-1'))
+        ReactDOM.render(<ReactTodos />, document.getElementById('react-app-2'))
+    </script>
+
+    <script>
+        // Vue.js Components
+        const { createApp, ref } = Vue
+
+        // Vue Counter
+        createApp({
+            setup() {
+                const count = ref(0)
+                return { count }
+            },
+            template: `
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Basic Counter</h3>
+                    <div class="space-y-3">
+                        <p class="text-3xl font-bold text-green-600">{{ count }}</p>
+                        <div class="space-x-2">
+                            <button @click="count++" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+</button>
+                            <button @click="count--" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>
+                            <button @click="count = 0" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            `
+        }).mount('#vue-app-1')
+
+        // Vue Todos
+        createApp({
+            setup() {
+                const todos = ref(['Learn Vue.js', 'Build something cool'])
+                const newTodo = ref('')
+                
+                const addTodo = () => {
+                    if (newTodo.value.trim()) {
+                        todos.value.push(newTodo.value)
+                        newTodo.value = ''
+                    }
+                }
+                
+                const removeTodo = (index) => {
+                    todos.value.splice(index, 1)
+                }
+                
+                return { todos, newTodo, addTodo, removeTodo }
+            },
+            template: `
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Todo List</h3>
+                    <div class="space-y-3">
+                        <input v-model="newTodo" @keyup.enter="addTodo" 
+                               placeholder="Add todo..." class="w-full border rounded px-3 py-2">
+                        <ul class="space-y-2">
+                            <li v-for="(todo, index) in todos" :key="index" 
+                                class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>{{ todo }}</span>
+                                <button @click="removeTodo(index)" class="text-red-500 hover:text-red-700">×</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `
+        }).mount('#vue-app-2')
+
+        // jQuery Implementation
+        $(document).ready(function() {
+            let count = 0
+            let todos = []
+            
+            // Counter functionality
+            $('#jquery-plus').click(function() {
+                count++
+                $('#jquery-count').text(count)
+            })
+            
+            $('#jquery-minus').click(function() {
+                count--
+                $('#jquery-count').text(count)
+            })
+            
+            $('#jquery-reset').click(function() {
+                count = 0
+                $('#jquery-count').text(count)
+            })
+            
+            // Todo functionality
+            function renderTodos() {
+                const todoList = $('#jquery-todos')
+                todoList.empty()
+                todos.forEach(function(todo, index) {
+                    todoList.append(`
+                        <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                            <span>${todo}</span>
+                            <button class="jquery-remove text-red-500 hover:text-red-700" data-index="${index}">×</button>
+                        </li>
+                    `)
+                })
+            }
+            
+            $('#jquery-add-todo').click(function() {
+                const newTodo = $('#jquery-todo-input').val().trim()
+                if (newTodo) {
+                    todos.push(newTodo)
+                    $('#jquery-todo-input').val('')
+                    renderTodos()
+                }
+            })
+            
+            $('#jquery-todo-input').keypress(function(e) {
+                if (e.which === 13) { // Enter key
+                    $('#jquery-add-todo').click()
+                }
+            })
+            
+            // Event delegation for remove buttons
+            $(document).on('click', '.jquery-remove', function() {
+                const index = $(this).data('index')
+                todos.splice(index, 1)
+                renderTodos()
+            })
+            
+            // Initialize with default todos
+            todos = ['Learn jQuery', 'Understand DOM manipulation']
+            renderTodos()
+        })
+    </script>
+</body>
+</html>
